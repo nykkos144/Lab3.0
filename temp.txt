@@ -1,0 +1,395 @@
+
+
+
+
+// class Drag {
+//     constructor(DOMElement, onDrag) {
+//         this.dragging = false;
+
+//         this.lastX = 0;
+//         this.lastY = 0;
+//         this.lastOffsetLeft = 0;
+//         this.lastOffsetTop = 0;
+
+//         this.DOMElement = DOMElement;
+//         this.onDragCallback = onDrag;
+
+//         this.bind();
+//     }
+
+//     onMouseDown(e) {
+//         this.lastX = e.clientX;
+//         this.lastY = e.clientY;
+//         this.lastOffsetLeft = this.DOMElement.offsetLeft;
+//         this.lastOffsetTop = this.DOMElement.offsetTop;
+
+//         this.dragging = true;
+//     }
+
+//     onMouseMove(e) {
+//         if (this.dragging) {
+
+//             // let xDelta = e.clientX - this.lastX;
+//             // let yDelta = e.clientY - this.lastY;
+
+//             let xDelta = this.lastOffsetLeft + (e.clientX - this.lastX);
+//             let yDelta = this.lastOffsetTop + (e.clientY - this.lastY);
+
+//             // this.onDragCallback(xDelta, yDelta);
+//             this.onDragCallback(xDelta, yDelta);
+
+//         }
+//     }
+
+//     onMouseUp(e) {
+//         this.dragging = false;
+//     }
+
+
+//     bind() {
+//         let el = this.DOMElement;
+
+//         // TODO - add phone compatibility -- aka. touchstart; touchmove; touchend
+
+//         el.addEventListener('mousedown', this.onMouseDown.bind(this));
+//         el.addEventListener('mousemove', this.onMouseMove.bind(this));
+//         el.addEventListener('mouseup', this.onMouseUp.bind(this));
+//     }
+// }
+
+
+class Drag {
+    constructor(canvas, onDrag, drawGrid) {
+        this.dragging = false;
+
+        // this.lastX = 0;
+        // this.lastY = 0;
+        this.lastOffsetLeft = 0;
+        this.lastOffsetTop = 0;
+
+        this.lastPos = {
+            x: 0,
+            y: 0
+        }
+
+        this.canvas = canvas;
+        this.onDragCallback = onDrag;
+        this.draw = drawGrid;
+
+        this.bind();
+    }
+
+    
+    onMouseDown(e) {
+        this.dragging = true;        
+
+        // console.log(e.clientX, e.clientY);
+        // console.log(this.canvas.offsetLeft, this.canvas.offsetTop);
+        
+        // this.reset();
+
+        this.lastPos = {
+            x: e.clientX,
+            y: e.clientY
+        }
+
+        // this.canvas.getContext('2d').translate(5.5, 18)
+        // this.lastX = e.clientX;
+        // this.lastY = e.clientY;
+        // this.lastOffsetLeft = this.canvas.offsetLeft;
+        // this.lastOffsetTop = this.canvas.offsetTop;
+    }
+
+    onMouseMove(e) {
+        if (this.dragging) {
+
+            let xDelta = (e.clientX - this.lastPos.x);
+            let yDelta = (e.clientY - this.lastPos.y);
+
+            this.lastPos = {
+                x: e.clientX,
+                y: e.clientY
+            }
+
+            this.onDragCallback(xDelta, yDelta);
+        }
+    }
+
+    onMouseUp(e) {
+        this.dragging = false;
+        // this.reset();
+
+        // this.canvas.getContext('2d').setTransform(1, 0, 0, 1, 0.5, 0.5);
+        // this.canvas.getContext('2d').restore();
+    }
+
+
+    bind() {
+        // TODO - add phone compatibility -- aka. touchstart; touchmove; touchend
+
+        this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
+        this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
+        this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
+    }
+
+}
+
+
+class Node {
+    constructor(i, j, size) {
+        this.i = i;
+        this.j = j;
+        this.size = size;
+        this.createDOMELement();
+        this.left = 0;
+        this.top = 0;
+    }
+
+    createDOMELement() {
+        this.rootElement = document.createElement('div');
+        this.rootElement.className = 'node';
+        // this.rootElement.innerHTML += this.i + ' ' + this.j;
+        this.rootElement.style.height = this.size + 'px';
+        // this.rootElement.appendChild('<label>1</label>');
+    }
+
+    appendTo(el) {
+        el.appendChild(this.rootElement);
+    }
+}
+
+class Grid {
+    constructor(DOMElement, canvas) {
+        this.DOMElement = DOMElement;
+
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+
+        this.nodeSize = 40;
+
+        this.rowLen = Math.ceil(window.innerHeight / this.nodeSize) + 1;
+        this.colLen = Math.ceil(window.innerWidth / this.nodeSize) + 1;
+
+        this.grid = this.createGrid();
+
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+    
+        this.translate = {
+            x: 0,
+            y: 0
+        };
+
+        this.zeroPos = {
+            x: 0,
+            y: 0
+        };
+    }
+
+    init() {
+        // let drag = new Drag(this.DOMElement, this.onDrag.bind(this));
+        let drag = new Drag(this.canvas, this.onDrag.bind(this), this.drawGrid);
+
+        this.canvas.width = this.colLen * (this.nodeSize);
+        this.canvas.height = this.rowLen * (this.nodeSize);
+
+        // this.translate = {
+        //     x: -(this.width - this.canvas.width) / 2 - .5,
+        //     y: -(this.height - this.canvas.height) / 2 - .5
+        // }
+
+        // this.translate = {
+        //     x: (this.width - this.canvas.width) / 2 - .5,
+        //     y: (this.height - this.canvas.height) / 2 - .5
+        // }
+        // this.ctx.save();
+
+        // this.ctx.translate((this.width - this.canvas.width) / 2 - .5, (this.height - this.canvas.height) / 2 - .5);
+        // this.ctx.translate(this.translate.x, this.translate.y);
+        this.drawGrid();
+    }
+
+    onDrag(x, y) {
+
+        this.translate = {
+            x: this.translate.x - x,
+            y: this.translate.y - y
+        };
+
+        console.log(' ');
+        console.log('-- ', this.translate.x, this.translate.y);
+
+        // let flag = false;
+        let tempX, tempY;
+        if (this.translate.x > 0) {
+            tempX = x;
+            // this.translate.x -= x;
+        }
+        else {
+            tempX = -this.nodeSize;
+            tempY = -this.translate.y;
+            this.translate.x = this.nodeSize;
+            // flag = true;
+        }
+
+        if (this.translate.y > 0) {
+            tempY = y;
+        }
+        else {
+            tempY = -this.nodeSize;
+            tempX = -this.translate.x;
+            this.translate.y = this.nodeSize;
+            // flag = true;
+        }
+
+
+        // console.log('// ', tempX, tempY);
+        this.ctx.translate(tempX, tempY);
+
+        // if (this.translate.x < 0) {
+        //     this.ctx.translate(this.nodeSize, y);
+        //     this.translate.x = this.nodeSize;
+        // }
+        // else {
+            // this.ctx.translate(x, y);
+        // }
+        
+
+        this.drawGrid();
+
+        // this.translate = {
+        //     x: this.translate.x - x,
+        //     y: this.translate.y - y
+        // };
+    }
+
+    onResize() {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+    }
+
+    createGrid() {
+        let tempGrid = [];
+        for (let i = 0; i < this.rowLen; i++) {
+            tempGrid.push(Array(this.colLen).fill(0));
+            // console.log(tempGrid[i]);
+        }
+        
+        return tempGrid;
+    }
+
+    drawGrid() {
+
+        let left = 0.5;
+        let top = 0.5;
+        let right = this.canvas.width;
+        let bottom = this.canvas.height;
+
+        this.ctx.clearRect(0, 0, right, bottom);
+        this.ctx.beginPath();
+
+        for (let x = left; x < right; x += this.nodeSize) {
+            this.ctx.moveTo(x, top);
+            this.ctx.lineTo(x, bottom);
+        }
+
+        for (let y = top; y < bottom; y += this.nodeSize) {
+            this.ctx.moveTo(left, y);
+            this.ctx.lineTo(right, y);
+        }
+        
+        this.ctx.lineWidth = 1;
+        this.ctx.fillStyle = "#000";
+        this.ctx.strokeStyle = "#000";
+
+        // this.ctx.fillRect(this.nodeSize, this.nodeSize, this.nodeSize, this.nodeSize);
+        this.ctx.stroke();
+    
+        
+    }
+
+
+    
+    // createGrid() {
+
+    //     // let c = document.getElementById('grid-canvas');
+    //     let canvas = document.querySelector('#grid-canvas');
+    //     let ctx = canvas.getContext('2d');
+    //     canvas.width = this.width;
+    //     canvas.height = this.height;
+        
+    //     function draw() {
+    //         let step = 30;
+    //         let left = 0.5 - Math.ceil(canvas.width / step) * step;
+    //         let top = 0.5 - Math.ceil(canvas.height / step) * step;
+    //         let right = 2*canvas.width;
+    //         let bottom = 2*canvas.height;
+    //         ctx.clearRect(left, top, right - left, bottom - top);
+    //         ctx.beginPath();
+    //         for (let x = left; x < right; x += step) {
+    //             ctx.moveTo(x, top);
+    //             ctx.lineTo(x, bottom);
+    //         }
+    //         for (let y = top; y < bottom; y += step) {
+    //             ctx.moveTo(left, y);
+    //             ctx.lineTo(right, y);
+    //         }
+    //         ctx.strokeStyle = "#888";
+    //         ctx.stroke();
+    //     }
+        
+        
+    //     // Mouse event handling:
+    //     let start;
+    //     const getPos = (e) => ({
+    //         x: e.clientX - canvas.offsetLeft,
+    //         y: e.clientY - canvas.offsetTop 
+    //     });
+        
+    //     const reset = () => {
+    //         start = null;
+    //         // ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translation
+    //         draw();
+    //     }
+        
+    //     canvas.addEventListener("mousedown", e => {
+    //         reset();
+    //         start = getPos(e)
+    //     });
+        
+    //     canvas.addEventListener("mouseup", reset);
+    //     canvas.addEventListener("mouseleave", reset);
+        
+    //     canvas.addEventListener("mousemove", e => {
+    //         // Only move the grid when we registered a mousedown event
+    //         if (!start) return;
+    //         let pos = getPos(e);
+    //         // Move coordinate system in the same way as the cursor
+    //         ctx.translate(pos.x - start.x, pos.y - start.y);
+    //         draw();
+    //         start = pos;
+    //     });
+        
+    //     draw();
+
+
+
+    // }
+
+
+
+    updateGrid() {
+        
+    }
+
+}
+
+
+let grid = new Grid(document.getElementById('grid-container'), document.getElementById('grid-canvas'));
+grid.init();
+
+
+
+
+
+

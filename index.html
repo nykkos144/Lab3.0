@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sandbox | Lab 3.0</title>
+    <link rel="shortcut icon" href="./assets/logo.svg" type="image/x-icon">
+
+    <link rel="stylesheet" href="./index.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <!-- <div id="grid-container">
+
+    </div> -->
+
+    <!-- <div id="select-indicator"></div> -->
+
+    <img src="./assets/startGrid.svg" id="start-img" style="display: none;" />
+    <img src="./assets/endGrid.svg" id="end-img" style="display: none;" />
+
+    <canvas id="grid-canvas"></canvas>
+    <canvas id="grid-canvas-cover" style="pointer-events: none;"></canvas>
+
+
+    <div class="toolbar" style="top: 20px; left: 20px">
+        <div class="tb-item" id="add-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_901)">
+                <path d="M10 1.66669V18.3334" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.66669 10H18.3334" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_901">
+                <rect width="20" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">Add</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="remove-btn">
+            <svg width="20" height="2" viewBox="0 0 20 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_898)">
+                <path d="M1.25 1H18.75" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_898">
+                <rect width="20" height="2" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">Remove</div>
+        </div>
+    </div>
+
+    <div class="toolbar" style="top: calc(20px + 2 * 60px + 30px); left: 20px">
+        <div class="tb-item" id="start-btn">
+            <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_866)">
+                <path d="M1.33331 12.5C1.33331 12.5 2.16665 11.6667 4.66665 11.6667C7.16665 11.6667 8.83331 13.3334 11.3333 13.3334C13.8333 13.3334 14.6666 12.5 14.6666 12.5V2.50002C14.6666 2.50002 13.8333 3.33335 11.3333 3.33335C8.83331 3.33335 7.16665 1.66669 4.66665 1.66669C2.16665 1.66669 1.33331 2.50002 1.33331 2.50002V12.5Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.33331 18.3333V12.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_866">
+                <rect width="16" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">Start</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="end-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_862)">
+                <path d="M10 1.66669C7.78988 1.66669 5.67027 2.54466 4.10746 4.10746C2.54466 5.67027 1.66669 7.78988 1.66669 10C1.66669 12.2102 2.54466 14.3298 4.10746 15.8926C5.67027 17.4554 7.78988 18.3334 10 18.3334C12.2102 18.3334 14.3298 17.4554 15.8926 15.8926C17.4554 14.3298 18.3334 12.2102 18.3334 10C18.3334 7.78988 17.4554 5.67027 15.8926 4.10746C14.3298 2.54466 12.2102 1.66669 10 1.66669V1.66669Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 5C8.67392 5 7.40215 5.52678 6.46447 6.46447C5.52678 7.40215 5 8.67392 5 10C5 11.3261 5.52678 12.5979 6.46447 13.5355C7.40215 14.4732 8.67392 15 10 15C11.3261 15 12.5979 14.4732 13.5355 13.5355C14.4732 12.5979 15 11.3261 15 10C15 8.67392 14.4732 7.40215 13.5355 6.46447C12.5979 5.52678 11.3261 5 10 5Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 9C9.73478 9 9.48043 9.10536 9.29289 9.29289C9.10536 9.48043 9 9.73478 9 10C9 10.2652 9.10536 10.5196 9.29289 10.7071C9.48043 10.8946 9.73478 11 10 11C10.2652 11 10.5196 10.8946 10.7071 10.7071C10.8946 10.5196 11 10.2652 11 10C11 9.73478 10.8946 9.48043 10.7071 9.29289C10.5196 9.10536 10.2652 9 10 9Z" fill="#8B8B8B" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_862">
+                <rect width="20" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">End</div>
+        </div>
+    </div>
+
+    <div class="toolbar" style="bottom: 20px; left: 20px">
+        <div class="tb-item" id="delete-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_877)">
+                <path d="M1.5 4H16.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.8334 3.99996V15.6666C14.8334 16.1087 14.6578 16.5326 14.3452 16.8451C14.0326 17.1577 13.6087 17.3333 13.1667 17.3333H4.83335C4.39133 17.3333 3.9674 17.1577 3.65484 16.8451C3.34228 16.5326 3.16669 16.1087 3.16669 15.6666V3.99996M5.66669 3.99996V2.33329C5.66669 1.89127 5.84228 1.46734 6.15484 1.15478C6.4674 0.842221 6.89133 0.666626 7.33335 0.666626H10.6667C11.1087 0.666626 11.5326 0.842221 11.8452 1.15478C12.1578 1.46734 12.3334 1.89127 12.3334 2.33329V3.99996" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7.33331 8.16663V13.1666" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.6667 8.16663V13.1666" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_877">
+                <rect width="18" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">Delete components</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="refresh-btn">
+            <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_872)">
+                <path d="M0.833313 2.33337V7.33337H5.83331" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19.1667 15.6666V10.6666H14.1667" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17.075 6.49998C16.6523 5.30564 15.934 4.23782 14.9871 3.39616C14.0401 2.55451 12.8954 1.96645 11.6597 1.68686C10.4241 1.40727 9.13769 1.44527 7.92065 1.79729C6.70362 2.14932 5.5956 2.80391 4.69998 3.69998L0.833313 7.33331" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19.1667 10.6666L15.3 14.3C14.4044 15.196 13.2963 15.8506 12.0793 16.2026C10.8623 16.5547 9.57591 16.5927 8.34023 16.3131C7.10454 16.0335 5.95982 15.4454 5.01288 14.6038C4.06593 13.7621 3.34763 12.6943 2.92499 11.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_872">
+                <rect width="20" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">Restart</div>
+        </div>
+    </div>
+
+    <div class="toolbar" style="top: 20px; right: 20px">
+        <div class="tb-item" id="run-btn">
+            <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_926)">
+                <path d="M1.33325 0.666687L14.6666 9.00002L1.33325 17.3334V0.666687Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_926">
+                <rect width="16" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper left">Run</div>
+        </div>
+    </div>
+
+    <div class="toolbar" style="top: calc(20px + 60px + 30px); right: 20px">
+        <!-- <div class="tb-item" id="alg-btn" style="font-size: 15px; color: #8B8B8B;">
+            Alg
+        </div> -->
+        <div class="tb-item" id="alg-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.2592 10.0001H15.5555L12.7778 18.3334L7.2222 1.66675L4.44443 10.0001H0.740723" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="tbi-helper left">Algorithms</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="gen-btn">
+            <!-- <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 11C21 16.5228 16.5228 21 11 21C5.47715 21 1 16.5228 1 11M21 11C21 5.47715 16.5228 1 11 1C5.47715 1 1 5.47715 1 11M21 11H14.6842M1 11H5.21053M18.8947 11C18.8947 15.3601 15.3601 18.8947 11 18.8947M3.10526 11C3.10526 6.63986 6.63986 3.10526 11 3.10526M5.21053 11C5.21053 14.1974 7.80256 16.7895 11 16.7895V14.6842M5.21053 11C5.21053 7.80256 7.80256 5.21053 11 5.21053M14.6842 11C14.6842 13.0347 13.0347 14.6842 11 14.6842M14.6842 11C14.6842 8.96527 13.0347 7.31579 11 7.31579C8.96527 7.31579 7.31579 8.96527 7.31579 11C7.31579 13.0347 8.96527 14.6842 11 14.6842" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round"/>
+            </svg>       -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.66675 1.66675H8.14823V8.14823H1.66675V1.66675Z" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11.8518 1.66675H18.3333V8.14823H11.8518V1.66675Z" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11.8518 11.8518H18.3333V18.3333H11.8518V11.8518Z" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.66675 11.8518H8.14823V18.3333H1.66675V11.8518Z" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="tbi-helper left">Generate</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="settings-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_921)">
+                <path d="M10 7.5C9.33696 7.5 8.70107 7.76339 8.23223 8.23223C7.76339 8.70107 7.5 9.33696 7.5 10C7.5 10.663 7.76339 11.2989 8.23223 11.7678C8.70107 12.2366 9.33696 12.5 10 12.5C10.663 12.5 11.2989 12.2366 11.7678 11.7678C12.2366 11.2989 12.5 10.663 12.5 10C12.5 9.33696 12.2366 8.70107 11.7678 8.23223C11.2989 7.76339 10.663 7.5 10 7.5Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.1666 12.5C16.0557 12.7513 16.0226 13.0301 16.0716 13.3005C16.1206 13.5708 16.2495 13.8202 16.4416 14.0166L16.4916 14.0666C16.6465 14.2214 16.7695 14.4052 16.8533 14.6076C16.9372 14.8099 16.9804 15.0268 16.9804 15.2458C16.9804 15.4648 16.9372 15.6817 16.8533 15.884C16.7695 16.0864 16.6465 16.2702 16.4916 16.425C16.3368 16.5799 16.153 16.7029 15.9507 16.7867C15.7483 16.8706 15.5314 16.9138 15.3124 16.9138C15.0934 16.9138 14.8765 16.8706 14.6742 16.7867C14.4719 16.7029 14.288 16.5799 14.1332 16.425L14.0833 16.375C13.8869 16.1829 13.6374 16.054 13.3671 16.005C13.0967 15.956 12.8179 15.989 12.5666 16.1C12.3201 16.2056 12.1099 16.381 11.9618 16.6046C11.8138 16.8282 11.7343 17.0902 11.7333 17.3583V17.5C11.7333 17.942 11.5577 18.3659 11.2451 18.6785C10.9325 18.991 10.5086 19.1666 10.0666 19.1666C9.62456 19.1666 9.20063 18.991 8.88807 18.6785C8.57551 18.3659 8.39992 17.942 8.39992 17.5V17.425C8.39347 17.1491 8.30418 16.8816 8.14368 16.6572C7.98317 16.4328 7.75886 16.2619 7.49992 16.1666C7.24857 16.0557 6.96976 16.0226 6.69943 16.0716C6.4291 16.1207 6.17965 16.2495 5.98325 16.4416L5.93325 16.4916C5.77846 16.6466 5.59465 16.7695 5.39232 16.8534C5.18999 16.9373 4.97311 16.9805 4.75408 16.9805C4.53506 16.9805 4.31818 16.9373 4.11585 16.8534C3.91352 16.7695 3.72971 16.6466 3.57492 16.4916C3.41996 16.3369 3.29703 16.153 3.21315 15.9507C3.12928 15.7484 3.08611 15.5315 3.08611 15.3125C3.08611 15.0935 3.12928 14.8766 3.21315 14.6742C3.29703 14.4719 3.41996 14.2881 3.57492 14.1333L3.62492 14.0833C3.81703 13.8869 3.94591 13.6375 3.99492 13.3671C4.04394 13.0968 4.01085 12.818 3.89992 12.5666C3.79428 12.3202 3.61888 12.11 3.39531 11.9619C3.17173 11.8138 2.90974 11.7344 2.64159 11.7333H2.49992C2.05789 11.7333 1.63397 11.5577 1.32141 11.2452C1.00885 10.9326 0.833252 10.5087 0.833252 10.0666C0.833252 9.62462 1.00885 9.2007 1.32141 8.88813C1.63397 8.57557 2.05789 8.39998 2.49992 8.39998H2.57492C2.85075 8.39353 3.11826 8.30424 3.34267 8.14374C3.56708 7.98323 3.73801 7.75893 3.83325 7.49998C3.94418 7.24863 3.97727 6.96982 3.92826 6.69949C3.87924 6.42916 3.75037 6.17971 3.55825 5.98331L3.50825 5.93331C3.35329 5.77852 3.23036 5.59471 3.14649 5.39238C3.06261 5.19005 3.01944 4.97317 3.01944 4.75415C3.01944 4.53512 3.06261 4.31824 3.14649 4.11591C3.23036 3.91358 3.35329 3.72977 3.50825 3.57498C3.66304 3.42002 3.84685 3.29709 4.04918 3.21321C4.25151 3.12934 4.46839 3.08617 4.68742 3.08617C4.90644 3.08617 5.12332 3.12934 5.32565 3.21321C5.52798 3.29709 5.7118 3.42002 5.86658 3.57498L5.91658 3.62498C6.11298 3.81709 6.36243 3.94597 6.63276 3.99498C6.90309 4.044 7.1819 4.01091 7.43325 3.89998H7.49992C7.74639 3.79434 7.9566 3.61894 8.10466 3.39537C8.25272 3.17179 8.33218 2.9098 8.33325 2.64165V2.49998C8.33325 2.05795 8.50885 1.63403 8.82141 1.32147C9.13397 1.00891 9.55789 0.833313 9.99992 0.833313C10.4419 0.833313 10.8659 1.00891 11.1784 1.32147C11.491 1.63403 11.6666 2.05795 11.6666 2.49998V2.57498C11.6677 2.84313 11.7471 3.10513 11.8952 3.3287C12.0432 3.55228 12.2534 3.72768 12.4999 3.83331C12.7513 3.94424 13.0301 3.97733 13.3004 3.92832C13.5707 3.8793 13.8202 3.75043 14.0166 3.55831L14.0666 3.50831C14.2214 3.35335 14.4052 3.23042 14.6075 3.14655C14.8098 3.06267 15.0267 3.0195 15.2458 3.0195C15.4648 3.0195 15.6817 3.06267 15.884 3.14655C16.0863 3.23042 16.2701 3.35335 16.4249 3.50831C16.5799 3.6631 16.7028 3.84692 16.7867 4.04925C16.8706 4.25158 16.9137 4.46845 16.9137 4.68748C16.9137 4.90651 16.8706 5.12338 16.7867 5.32571C16.7028 5.52804 16.5799 5.71186 16.4249 5.86665L16.3749 5.91665C16.1828 6.11305 16.0539 6.36249 16.0049 6.63282C15.9559 6.90315 15.989 7.18197 16.0999 7.43331V7.49998C16.2056 7.74645 16.381 7.95666 16.6045 8.10472C16.8281 8.25279 17.0901 8.33224 17.3583 8.33331H17.4999C17.9419 8.33331 18.3659 8.50891 18.6784 8.82147C18.991 9.13403 19.1666 9.55795 19.1666 9.99998C19.1666 10.442 18.991 10.8659 18.6784 11.1785C18.3659 11.4911 17.9419 11.6666 17.4999 11.6666H17.4249C17.1568 11.6677 16.8948 11.7472 16.6712 11.8952C16.4476 12.0433 16.2722 12.2535 16.1666 12.5V12.5Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_921">
+                <rect width="20" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper left">Settings</div>
+        </div>
+    </div>
+
+    <div class="toolbar" style="bottom: 20px; right: 20px">
+        <div class="tb-item" id="upload-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_891)">
+                <path d="M16.5 11.5V14.8333C16.5 15.2754 16.3244 15.6993 16.0118 16.0118C15.6993 16.3244 15.2754 16.5 14.8333 16.5H3.16667C2.72464 16.5 2.30072 16.3244 1.98816 16.0118C1.67559 15.6993 1.5 15.2754 1.5 14.8333V11.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.1666 5.66667L8.99992 1.5L4.83325 5.66667" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 1.5V11.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_891">
+                <rect width="18" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper left">Upload</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="download-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_20_887)">
+                <path d="M16.5 11.5V14.8333C16.5 15.2754 16.3244 15.6993 16.0118 16.0118C15.6993 16.3244 15.2754 16.5 14.8333 16.5H3.16667C2.72464 16.5 2.30072 16.3244 1.98816 16.0118C1.67559 15.6993 1.5 15.2754 1.5 14.8333V11.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.83325 7.33337L8.99992 11.5L13.1666 7.33337" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 11.5V1.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_20_887">
+                <rect width="18" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper left">Retrieve</div>
+        </div>
+    </div>
+
+    <div class="toolbar side" style="bottom: 20px; left: 50%; transform: translateX(-50%);">
+        <div class="tb-item selected" id="hand-btn">
+            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_92_15)">
+                <path d="M4.59998 9.49068C4.59998 9.08549 4.44194 8.69689 4.16064 8.41038C3.87933 8.12387 3.4978 7.9629 3.09998 7.9629C2.70215 7.9629 2.32062 8.12387 2.03932 8.41038C1.75801 8.69689 1.59998 9.08549 1.59998 9.49068V11.5277C1.59998 13.5537 2.39015 15.4967 3.79667 16.9292C5.2032 18.3618 7.11085 19.1666 9.09998 19.1666C11.0891 19.1666 12.9968 18.3618 14.4033 16.9292C15.8098 15.4967 16.6 13.5537 16.6 11.5277V6.43513C16.6 6.02993 16.4419 5.64134 16.1606 5.35482C15.8793 5.06831 15.4978 4.90735 15.1 4.90735C14.7022 4.90735 14.3206 5.06831 14.0393 5.35482C13.758 5.64134 13.6 6.02993 13.6 6.43513" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M13.6 8.98144V3.37958C13.6 2.97439 13.4419 2.5858 13.1606 2.29928C12.8793 2.01277 12.4978 1.85181 12.1 1.85181C11.7022 1.85181 11.3206 2.01277 11.0393 2.29928C10.758 2.5858 10.6 2.97439 10.6 3.37958V8.98144" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7.59998 8.98152V2.36115C7.59998 1.95596 7.75801 1.56736 8.03932 1.28085C8.32062 0.994336 8.70215 0.833374 9.09998 0.833374C9.4978 0.833374 9.87933 0.994336 10.1606 1.28085C10.4419 1.56736 10.6 1.95596 10.6 2.36115V3.37967" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.59998 12.037V3.37958C4.59998 2.97439 4.75801 2.5858 5.03932 2.29928C5.32062 2.01277 5.70215 1.85181 6.09998 1.85181C6.4978 1.85181 6.87933 2.01277 7.16064 2.29928C7.44194 2.5858 7.59998 2.97439 7.59998 3.37958" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_92_15">
+                <rect width="18" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper left">Move</div>
+        </div>
+        <hr/>
+        <div class="tb-item" id="pointer-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_93_20)">
+                <path d="M1.58826 1.58826L7.82649 16.5618L10.0412 10.0412L16.5618 7.82649L1.58826 1.58826Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.4117 10.4117L15.7059 15.7059" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_93_20">
+                <rect width="18" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+            <div class="tbi-helper right">Select</div>
+        </div>
+    </div>
+
+
+
+    <div id="menu-container">
+        <!-- <div id="menu-back"></div> -->
+        <div id="menu">
+
+            <!-- <div class="menu-item">
+                <label for="" class="mi-main">Dijkstra's</label>
+                <div class="mi-icons pointers">
+                    <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_101_512)">
+                        <path d="M13.75 1.54541L5.15625 10.6195L1.25 6.49491" stroke="#B0B0B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_101_512">
+                        <rect width="15" height="12" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_101_510)">
+                        <path d="M11.6294 10.0694L10.0446 3.72974C9.96211 3.40009 9.68781 3.17158 9.37466 3.17158H8.06715C8.14462 2.95348 8.19475 2.72192 8.19475 2.47713C8.19475 1.32652 7.26203 0.393799 6.11142 0.393799C4.96081 0.393799 4.02809 1.32652 4.02809 2.47713C4.02809 2.72192 4.078 2.95348 4.15569 3.17158H2.84818C2.53503 3.17158 2.26051 3.40031 2.17826 3.72974L0.592972 10.0694C0.4122 10.7922 0.911115 11.5047 1.59796 11.5047H10.6247C11.3113 11.5047 11.8102 10.7922 11.6294 10.0694ZM6.1112 3.17136C5.72839 3.17136 5.41676 2.85973 5.41676 2.47692C5.41676 2.0941 5.72839 1.78247 6.1112 1.78247C6.49401 1.78247 6.80565 2.0941 6.80565 2.47692C6.80565 2.85973 6.49401 3.17136 6.1112 3.17136Z" fill="#B0B0B0"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_101_510">
+                        <rect width="12" height="12" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg>                                       
+                </div>
+                <div class="mi-icons info">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_101_546)">
+                        <path d="M10 1.25C7.67936 1.25 5.45376 2.17187 3.81282 3.81282C2.17187 5.45376 1.25 7.67936 1.25 10C1.25 12.3206 2.17187 14.5462 3.81282 16.1872C5.45376 17.8281 7.67936 18.75 10 18.75C12.3206 18.75 14.5462 17.8281 16.1872 16.1872C17.8281 14.5462 18.75 12.3206 18.75 10C18.75 7.67936 17.8281 5.45376 16.1872 3.81282C14.5462 2.17187 12.3206 1.25 10 1.25V1.25Z" stroke="#B0B0B0" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10 15V10" stroke="#B0B0B0" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="10" cy="7" r="1" fill="#B0B0B0"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_101_546">
+                        <rect width="20" height="20" fill="white"/>
+                        </clipPath>
+                        </defs>
+                    </svg>                                                             
+                </div>
+            </div>
+            <hr/> -->
+
+
+        </div>
+    </div>
+
+    <!-- <img src="./assets/flag.svg" alt=""> -->
+
+    <!-- <script type="module" src="./modules/Grid.js"></script> -->
+    <script type="module" src="./index.js"></script>
+</body>
+</html>
