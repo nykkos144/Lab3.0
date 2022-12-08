@@ -442,8 +442,13 @@ export default class Grid {
         this.startImg = document.getElementById('start-img');
         this.endImg = document.getElementById('end-img');
 
-        this.canvasCover = document.getElementById('grid-canvas-cover');
-        this.coverCtx = this.canvasCover.getContext('2d');
+        // this.canvasCover = document.getElementById('grid-canvas-cover');
+        // this.coverCtx = this.canvasCover.getContext('2d');
+
+        this.checked = [];
+        this.currentChecked = [];
+        this.path = [];
+
     }
 
     init() {
@@ -480,6 +485,23 @@ export default class Grid {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
     }
+
+
+    calcCords(x, y) {
+        // let cordsX = (this.components.walls[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
+        // let cordsY = (this.components.walls[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
+    
+        // return {
+        //     x: (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x),
+        //     y: (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y)
+        // }
+
+        return [
+            (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x),
+            (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y)
+        ]
+    }
+
 
     changeInteraction(inter) {
         this.interaction = inter;
@@ -800,8 +822,10 @@ export default class Grid {
                 continue;
             }
 
-            let cordsX = (this.components.walls[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-            let cordsY = (this.components.walls[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
+            let cordsX, cordsY;
+            [cordsX, cordsY] = this.calcCords(this.components.walls[i].x, this.components.walls[i].y);
+            // let cordsX = (this.components.walls[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
+            // let cordsY = (this.components.walls[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
 
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
@@ -814,8 +838,10 @@ export default class Grid {
         this.ctx.fillStyle = "#1DA1F240";
 
         for (let i = 0; i < this.selected.length; i++) {
-            let cordsX = (this.selected[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-            let cordsY = (this.selected[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
+            let cordsX, cordsY;
+            [cordsX, cordsY] = this.calcCords(this.selected[i].x, this.selected[i].y);
+            // let cordsX = (this.selected[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
+            // let cordsY = (this.selected[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
 
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
             this.ctx.strokeRect(cordsX + .5, cordsY + .5, this.nodeSize, this.nodeSize);
@@ -823,33 +849,65 @@ export default class Grid {
 
         // statr and end ///////////////////////////////////////////
 
-        let startX = (this.components.start.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        let startY = (this.components.start.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
+        // let startX = (this.components.start.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
+        // let startY = (this.components.start.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
         
+        let startX, startY;
+        [startX, startY] = this.calcCords(this.components.start.x, this.components.start.y);
+
         let ssizer = this.scalePreserveAspectRatio(this.startImg.width, this.startImg.height, this.nodeSize - this.nodeSize / 2.5, this.nodeSize - this.nodeSize / 2.5);
+        
+        let startDeltaX = startX + (this.nodeSize - this.startImg.height * ssizer) / 2;
+        let startDeltaY = startY + (this.nodeSize - this.startImg.width * ssizer) / 2;
 
         this.ctx.lineWidth = this.nodeSize / 15 - .5;
         this.ctx.strokeStyle = "#00FF00";
         this.ctx.strokeRect(startX + 2, startY + 2, this.nodeSize - 3, this.nodeSize - 3);
-
-        let startDeltaX = startX + (this.nodeSize - this.startImg.height * ssizer) / 2;
-        let startDeltaY = startY + (this.nodeSize - this.startImg.width * ssizer) / 2;
         this.ctx.drawImage(this.startImg, startDeltaX, startDeltaY, this.startImg.width * ssizer, this.startImg.height * ssizer);
         
-        let endX = (this.components.end.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        let endY = (this.components.end.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y); 
+        // let endX = (this.components.end.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
+        // let endY = (this.components.end.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y); 
+
+
+        let endX, endY;
+        [endX, endY] = this.calcCords(this.components.end.x, this.components.end.y);
 
         let esizer = this.scalePreserveAspectRatio(this.endImg.width, this.endImg.height, this.nodeSize - this.nodeSize / 2.5, this.nodeSize - this.nodeSize / 2.5);
         
-        this.ctx.strokeStyle = "#FF0000";
-
-        this.ctx.strokeRect(endX + 2, endY + 2, this.nodeSize - 3, this.nodeSize - 3);
-
         let endDeltaX = endX + (this.nodeSize - this.endImg.height * esizer) / 2;
         let endDeltaY = endY + (this.nodeSize - this.endImg.width * esizer) / 2;
+
+        this.ctx.strokeStyle = "#FF0000";
+        this.ctx.strokeRect(endX + 2, endY + 2, this.nodeSize - 3, this.nodeSize - 3);
         this.ctx.drawImage(this.endImg, endDeltaX, endDeltaY, this.endImg.width * esizer, this.endImg.height * esizer);
 
         // this.ctx.closePath();
+
+        // checked and path ///////////////////////////////////////////
+        
+        this.ctx.fillStyle = "#00D1FF";
+        for (let i = 0; i < this.checked.length; i++) {
+            let cordsX, cordsY;
+            [cordsX, cordsY] = this.calcCords(this.checked[i].x, this.checked[i].y);
+            
+            this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
+        }
+        
+        this.ctx.fillStyle = "#0057FF";
+        for (let i = 0; i < this.currentChecked.length; i++) {
+            let cordsX, cordsY;
+            [cordsX, cordsY] = this.calcCords(this.currentChecked[i].x, this.currentChecked[i].y);
+
+            this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
+        }
+
+        this.ctx.fillStyle = "#FFFF00";
+        for (let i = 0; i < this.path.length; i++) {
+            let cordsX, cordsY;
+            [cordsX, cordsY] = this.calcCords(this.path[i].x, this.path[i].y);
+
+            this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
+        }
 
     }
     scalePreserveAspectRatio(imgW, imgH, maxW, maxH){
@@ -864,10 +922,13 @@ export default class Grid {
             this.ctx.fillStyle = "#fff";
         }
         else if (type == 'checked') {
-            this.ctx.fillStyle = "#d90914";
+            this.ctx.fillStyle = "#0057FF";
         }
-        else if (type == 'checked2') {
+        else if (type == 'current') {
             this.ctx.fillStyle = "#00D1FF";
+        }
+        else if (type == 'path') {
+            this.ctx.fillStyle = "#FFFF00";
         }
 
         this.ctx.beginPath();
@@ -882,9 +943,49 @@ export default class Grid {
     }
 
 
-    BFS = async (start, end, walls, bounds) => {
+    // drawAlg(x, y) {
+
+    // }
+
+
+    checkComponents(x, y, type) {
+        if (type == 'current') {
+            this.currentChecked.push({
+                x: x,
+                y: y
+            });
+        }
+        else if (type == 'checked') {
+            this.currentChecked = this.currentChecked.filter(e => !(e.x === x && e.y === y));
+            this.checked.push({
+                x: x,
+                y: y
+            });
+        }
+        else if (type == 'path') {
+            this.currentChecked = this.currentChecked.filter(e => !(e.x === x && e.y === y));
+            this.checked = this.checked.filter(e => !(e.x === x && e.y === y));
+            this.path.push({
+                x: x,
+                y: y
+            });
+        }
+
+
+        if (x < this.zeroPos.x || x > this.zeroPos.x + this.colLen || y < this.zeroPos.y || y > this.zeroPos.y + this.rowLen) {
+            return;
+        }
+
+        this.drawGrid()
+        // this.undrawComponentsGrid(x, y);
+        // this.drawComponentsGrid(x, y, type);
+
+    }
+
+    BFS = async (start, end, walls, bounds, checkComponents) => {
         
         let exitFound = false;
+        let noExit = false;
 
         let queue = [];
         queue.push({
@@ -894,9 +995,6 @@ export default class Grid {
         });
 
         let checked = [start];
-
-    
-        // let ind = 1;
 
         while (queue.length > 0) {
 
@@ -925,40 +1023,22 @@ export default class Grid {
                 }
             ]
 
-            // addNode({
-            //     x: curr.x + 1,
-            //     y: curr.y,
-            //     path: curr.path
-            // }, this.drawComponentsGrid.bind(this));
-            
-            // addNode({
-            //     x: curr.x - 1,
-            //     y: curr.y,
-            //     path: curr.path
-            // }, this.drawComponentsGrid.bind(this));
-            // addNode({
-            //     x: curr.x,
-            //     y: curr.y + 1,
-            //     path: curr.path
-            // }, this.drawComponentsGrid.bind(this));
-            // addNode({
-            //     x: curr.x,
-            //     y: curr.y - 1,
-            //     path: curr.path
-            // }, this.drawComponentsGrid.bind(this));
-
             if (curr.x != start.x || curr.y != start.y) {
-                this.drawComponentsGrid(curr.x, curr.y, 'checked2');
+                checkComponents(curr.x, curr.y, 'checked');
             }
-
+            
             for (let i = 0; i < neighbors.length; i++) {
                 const x = neighbors[i].x;
                 const y = neighbors[i].y;
-
+                
+                // if (x < bounds.minX || y < bounds.minY || x > bounds.maxX || y > bounds.maxY) {
+                //     boundCross++;
+                //     // continue;
+                // }
                 if (walls.some(e => e.x === x && e.y === y) || checked.some(e => e.x === x && e.y === y)) {
                     continue;
                 }
-    
+                
                 if (x == start.x && y == start.y) {
                     continue;
                 }
@@ -983,76 +1063,47 @@ export default class Grid {
                     y: y,
                 });
 
-                this.undrawComponentsGrid(x, y);
-                this.drawComponentsGrid(x, y, 'checked');
+                // if (x == bounds.minX && (y >= bounds.minY && y <= bounds.maxY)) {
+                //     boundCross++;
+                //     console.log(boundCross, x, y);
+                // }
+                // if (x == bounds.maxX && (y >= bounds.minY && y <= bounds.maxY)) {
+                //     boundCross++;
+                //     console.log(boundCross, x, y);
+                // }
+                // if (y == bounds.minY && (x >= bounds.minX && x <= bounds.maxX)) {
+                //     boundCross++;
+                //     console.log(boundCross, x, y);
+                // }
+                // if (y == bounds.minY && (x >= bounds.minX && x <= bounds.maxX)) {
+                //     boundCross++;
+                //     console.log(boundCross, x, y);
+                // }
 
-                await waitForSecs(.00000001);
-    
+                checkComponents(x, y, 'current');
+                
+                await waitForSecs(1);
+                
             }
-            
-            setTimeout(() => {
-                // console.log('--')
-            }, 500)
-            // await waitForSecs(.05);
-            // ind ++;
-
+                        
             if (exitFound) {
-                console.log(curr);
+                
+                let path = curr.path;
+                for (let i = 0; i < path.length; i++) {
+                    checkComponents(path[i].x, path[i].y, 'path');
+                    await waitForSecs(100);
+                }
+
                 break;
             }
+
         }
 
-        // const addNode = (pos, drawComponentsGrid) => {
-        //     // if (pos.x < bounds.minX || pos.y < bounds.minY || pos.x > bounds.maxX || pos.y > bounds.maxY) {
-        //     //     return;
-        //     // }
-            
-        //     if (walls.some(e => e.x === pos.x && e.y === pos.y) || queue.some(e => e.x === pos.x && e.y === pos.y)) {
-        //         return;
-        //     }
-
-        //     if (pos.x == start.x && pos.y == start.y) {
-        //         return;
-        //     }
-        //     if (pos.x == end.x && pos.y == end.y) {
-        //         exitFound = true;
-        //         return;
-        //     }
-            
-        //     let newPath = pos.path.slice();
-        //     newPath.push({
-        //         x: pos.x,
-        //         y: pos.y
-        //     });
-        //     queue.push({
-        //         x: pos.x,
-        //         y: pos.y,
-        //         path: newPath
-        //     });
-
-        //     // (function(pos){
-        //     //     setTimeout(() => {
-        //     //         drawComponentsGrid(pos.x, pos.y, 'checked')
-        //     //         // clearTimeout(timeout)
-        //     //     }, 500)       
-        //     // })(ind);
-
-        //     // setTimeout(() => {
-        //         drawComponentsGrid(pos.x, pos.y, 'checked');
-        //         // clearTimeout(timeout)
-        //     // }, ind * 500)
-
-        //     await waitForSecs(1);
-
-        //     // clearTimeout(timeout)
-        // }
-
-        function waitForSecs(secs) {
+        function waitForSecs(milisecs) {
             return new Promise(resolve => {
-                setTimeout(resolve, secs * 1000);
+                setTimeout(resolve, milisecs);
             });
         }
-
 
     }
 
@@ -1091,22 +1142,22 @@ export default class Grid {
         console.log(bounds)
 
 
-        this.BFS(this.components.start, this.components.end, this.components.walls, bounds);
+        this.BFS(this.components.start, this.components.end, this.components.walls, bounds, this.checkComponents.bind(this));
 
     }
     
-    createGridMatrix() {
-        let tempGrid = [];
-        for (let i = 0; i < 3; i++) {
-            tempGrid.push(Array(this.components.end.x - this.components.start.x + 3).fill(null));
-        }
-        tempGrid[1][1] = 's';
-        tempGrid[1][tempGrid[1].length - 2] = 'e';
+    // createGridMatrix() {
+    //     let tempGrid = [];
+    //     for (let i = 0; i < 3; i++) {
+    //         tempGrid.push(Array(this.components.end.x - this.components.start.x + 3).fill(null));
+    //     }
+    //     tempGrid[1][1] = 's';
+    //     tempGrid[1][tempGrid[1].length - 2] = 'e';
         
-        console.log(tempGrid);
+    //     console.log(tempGrid);
 
-        return tempGrid;
-    }
+    //     return tempGrid;
+    // }
 
     // updateGridMatrix(x, y) {
         
