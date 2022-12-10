@@ -96,19 +96,21 @@ class Sandbox {
             gridControls: {
                 delete: document.getElementById('delete-btn'),
                 refresh: document.getElementById('refresh-btn'),
-                run: document.getElementById('run-btn')             
+                run: document.getElementById('run-btn'),
+                closeRun: document.getElementById('close-run-btn')
             }
 
         }
 
 
-        this.grid = new Grid(document.getElementById('grid-canvas'));
+        this.grid = new Grid(document.getElementById('grid-canvas'), this.returnInteraction.bind(this));
 
         this.init();
         // this.grid.init();
     }
 
     init() {
+
         this.grid.init();
 
         for (let type in this.btns) {
@@ -126,7 +128,6 @@ class Sandbox {
                 }
             }
         }
-
 
     }
 
@@ -167,23 +168,28 @@ class Sandbox {
                     // });
 
                     if (e.target.classList.contains('info-cont')) {
+
                         console.log(menuItem[id])
+                        
                         if (menuItem[id].classList.contains('open')) {
-                            console.log('-0-')
+                            // console.log('-0-')
                             menuItem[id].classList.remove('open');
+                            menuItem[id].style.height = '90px';
                             return;
                         }
 
                         
                         document.querySelectorAll('.menu-item').forEach(item => {
                             item.classList.remove('open');
+                            item.style.height = '90px';
                         });
                         menuItem[id].classList.add('open');
-
+                        menuItem[id].style.height = menuItem[id].scrollHeight + 'px';
                             // e.path[0].classList.add('open');
                     } else {
 
                         document.querySelectorAll('.menu-item').forEach(item => {
+                            item.style.height = '90px';
                             item.classList.remove('open');
                             item.classList.remove('selected');
                         });
@@ -244,7 +250,9 @@ class Sandbox {
         console.log('gridControl -> ', btn);
     }
 
-
+    returnInteraction() {
+        this.grid.changeInteraction(this.interaction);
+    }
 
     // BFS() {
 

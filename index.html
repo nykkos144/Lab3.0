@@ -29,7 +29,7 @@
     <!-- <canvas id="grid-canvas-cover" style="pointer-events: none;"></canvas> -->
 
 
-    <div class="toolbar" style="top: 20px; left: 20px">
+    <div class="toolbar left" style="top: 20px;">
         <div class="tb-item" id="add-btn">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_20_901)">
@@ -60,7 +60,7 @@
         </div>
     </div>
 
-    <div class="toolbar" style="top: calc(20px + 2 * 60px + 30px); left: 20px">
+    <div class="toolbar left" style="top: calc(20px + 2 * 60px + 30px);">
         <div class="tb-item" id="start-btn">
             <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_20_866)">
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <div class="toolbar" style="bottom: 20px; left: 20px">
+    <div class="toolbar left" style="bottom: 20px;">
         <div class="tb-item" id="delete-btn">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_20_877)">
@@ -129,9 +129,9 @@
         </div>
     </div>
 
-    <div class="toolbar" style="top: 20px; right: 20px">
+    <div class="toolbar right" id="tb-run" style="top: 20px;">
         <div class="tb-item" id="run-btn">
-            <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_20_926)">
                 <path d="M1.33325 0.666687L14.6666 9.00002L1.33325 17.3334V0.666687Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
@@ -140,12 +140,47 @@
                 <rect width="16" height="18" fill="white"/>
                 </clipPath>
                 </defs>
+            </svg> -->
+            <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_140_60)">
+                <path d="M1.33325 1.58252L14.6666 10L1.33325 18.4175V1.58252Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_140_60">
+                <rect width="16" height="20" fill="white"/>
+                </clipPath>
+                </defs>
             </svg>
             <div class="tbi-helper left">Run</div>
         </div>
+        <div class="tb-item hidden" id="close-run-btn">
+            <!-- <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_177_2)">
+                <path d="M18.3334 1.66675L1.66675 18.3334" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.66675 1.66675L18.3334 18.3334" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_177_2">
+                <rect width="20" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg> -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_177_2)">
+                <path d="M16.5 1.5L1.5 16.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.5 1.5L16.5 16.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_177_2">
+                <rect width="18" height="18" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>                
+            <div class="tbi-helper left">Close</div>
+        </div>
     </div>
 
-    <div class="toolbar" style="top: calc(20px + 60px + 30px); right: 20px">
+    <div class="toolbar right" style="top: calc(20px + 60px + 30px);">
         <!-- <div class="tb-item" id="alg-btn" style="font-size: 15px; color: #8B8B8B;">
             Alg
         </div> -->
@@ -185,7 +220,7 @@
         </div>
     </div>
 
-    <div class="toolbar" style="bottom: 20px; right: 20px">
+    <div class="toolbar right" style="bottom: 20px;">
         <div class="tb-item" id="upload-btn">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_20_891)">
@@ -219,7 +254,7 @@
         </div>
     </div>
 
-    <div class="toolbar side" style="bottom: 20px; left: 50%; transform: translateX(-50%);">
+    <div class="toolbar side bottom" style="left: 50%; transform: translateX(-50%);">
         <div class="tb-item selected" id="hand-btn">
             <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_92_15)">
@@ -256,7 +291,6 @@
 
 
     <div id="menu-container">
-        <!-- <div id="menu-back"></div> -->
         <div id="menu">
 
             <!-- <div class="menu-item">

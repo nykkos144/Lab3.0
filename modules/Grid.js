@@ -18,38 +18,24 @@ class Drag {
         this.clearSelected = clearSelected;
 
         this.interaction = gridVars.interaction;
-        this.nodeSize = gridVars.nodeSize;
-        this.dist = gridVars.dist;
-        this.zeroPos = gridVars.zeroPos;
 
         this.bind();
     }
 
     sendCordsUpdate(clientX, clientY) {
-        let xInd = Math.floor((clientX + this.nodeSize - this.dist.x) / this.nodeSize);
-        let yInd = Math.floor((clientY + this.nodeSize - this.dist.y) / this.nodeSize);
-
-        this.updateCallback(this.zeroPos.x + xInd,this.zeroPos.y + yInd);
+        
+        this.updateCallback(clientX, clientY);
     }
     sendCordsSelect(clientX, clientY) {
 
-        // let xInd = Math.floor((clientX + this.nodeSize - this.dist.x) / this.nodeSize);
-        // let yInd = Math.floor((clientY + this.nodeSize - this.dist.y) / this.nodeSize);
-
-        let sX = Math.min(this.lastPos.x, clientX);
-        let sY = Math.min(this.lastPos.y, clientY);
-
-        let eX = Math.max(this.lastPos.x, clientX);
-        let eY = Math.max(this.lastPos.y, clientY);
-
         let start = {
-            x: this.zeroPos.x + Math.floor((sX + this.nodeSize - this.dist.x) / this.nodeSize),
-            y: this.zeroPos.y + Math.floor((sY + this.nodeSize - this.dist.y) / this.nodeSize)
+            x: Math.min(this.lastPos.x, clientX),
+            y: Math.min(this.lastPos.y, clientY)
         }
 
         let end = {
-            x: this.zeroPos.x + Math.floor((eX + this.nodeSize - this.dist.x) / this.nodeSize),
-            y: this.zeroPos.y + Math.floor((eY + this.nodeSize - this.dist.y) / this.nodeSize)
+            x: Math.max(this.lastPos.x, clientX),
+            y: Math.max(this.lastPos.y, clientY)
         }
 
         this.selectCallback(start, end, this.selType ? this.selType : null);
@@ -86,6 +72,9 @@ class Drag {
         if (['add', 'remove'].includes(this.interaction)) {
             return;
         }
+
+        // this.canvas.classList.remove('hand');
+        // this.canvas.classList.add('hand-grab');
 
         this.lastPos = {
             x: e.clientX,
@@ -156,6 +145,11 @@ class Drag {
             this.sendCordsUpdate(e.clientX, e.clientY);
             return;
         }
+
+        // this.canvas.classList.add('hand');
+        // this.canvas.classList.remove('hand-grab');
+
+
     }
 
 
@@ -169,36 +163,6 @@ class Drag {
 
 }
 
-// class addClick {
-//     constructor(canvas, addClick, gridVars) {
-
-//         this.canvas = canvas;
-//         this.onClickCallback = addClick;
-
-//         this.nodeSize = gridVars.nodeSize;
-//         this.dist = gridVars.dist;
-//         this.zeroPos = gridVars.zeroPos;
-
-//         this.bind();
-//     }
-
-//     onClick(e) {
-//         // console.log(e.clientX, e.clientY);
-
-//         let xInd = Math.floor((e.clientX + this.nodeSize - this.dist.x) / this.nodeSize);
-//         let yInd = Math.floor((e.clientY + this.nodeSize - this.dist.y) / this.nodeSize);
-
-//         // console.log(xInd, yInd);
-//         this.onClickCallback(this.zeroPos.x + xInd,this.zeroPos.y + yInd);
-//     }
-
-//     bind() {
-//         this.canvas.addEventListener('click', this.onClick.bind(this));
-//     }
-// }
-// class removeClick {
-
-// }
 
 class Click {
     constructor(canvas, updateGridComponents, gridVars) {
@@ -207,23 +171,16 @@ class Click {
         this.updateCallback = updateGridComponents;
 
         this.interaction = gridVars.interaction;
-        this.nodeSize = gridVars.nodeSize;
-        this.dist = gridVars.dist;
-        this.zeroPos = gridVars.zeroPos;
 
         this.bind();
     }
 
     onClick(e) {
         if (['add', 'remove', 'pointer', 'hand'].includes(this.interaction)) {
-            // console.log('---')
             return;
         }
 
-        let xInd = Math.floor((e.clientX + this.nodeSize - this.dist.x) / this.nodeSize);
-        let yInd = Math.floor((e.clientY + this.nodeSize - this.dist.y) / this.nodeSize);
-
-        this.updateCallback(this.zeroPos.x + xInd,this.zeroPos.y + yInd);
+        this.updateCallback(e.clientX, e.clientY);
     }
 
     onRightClick(e) {
@@ -239,54 +196,6 @@ class Click {
 
 }
 
-// class DragClick {
-//     constructor(canvas, updateGridComponents, gridVars) {
-
-//         this.canvas = canvas;
-//         this.updateCallback = updateGridComponents;
-
-//         this.dragging = false;
-
-//         this.nodeSize = gridVars.nodeSize;
-//         this.dist = gridVars.dist;
-//         this.zeroPos = gridVars.zeroPos;
-
-//         this.bind();
-//     }
-
-//     sendCordsUpdate(clientX, clientY) {
-//         let xInd = Math.floor((clientX + this.nodeSize - this.dist.x) / this.nodeSize);
-//         let yInd = Math.floor((clientY + this.nodeSize - this.dist.y) / this.nodeSize);
-
-//         this.updateCallback(this.zeroPos.x + xInd,this.zeroPos.y + yInd);
-//     }
-
-//     onMouseDown(e) {
-//         this.dragging = true;
-//     }
-
-//     onMouseMove(e) {
-//         if (this.dragging) {
-//             this.sendCordsUpdate(e.clientX, e.clientY);
-//         }
-//     }
-
-//     onMouseUp(e) {
-//         this.dragging = false;
-//         this.sendCordsUpdate(e.clientX, e.clientY);
-//     }
-
-
-//     bind() {
-//         // TODO - add phone compatibility -- aka. touchstart; touchmove; touchend
-
-//         this.canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
-//         this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
-//         this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
-//     }
-    
-// }
-
 
 class Zoom {
     constructor(canvas, zoom) {
@@ -300,14 +209,19 @@ class Zoom {
     onWheel(e) {
         e.preventDefault();
 
+        let dist = {
+            x: e.clientX,
+            y: e.clientY
+        }
+
         // console.log(e.wheelDelta);
 
         if (e.ctrlKey == true) {
-            this.zoomCallback(e.wheelDelta > 0 ? 2 : -2);
+            this.zoomCallback(e.wheelDelta > 0 ? 2 : -2, dist);
             return;
         }
 
-        this.zoomCallback(e.wheelDelta > 0 ? 1 : -1);
+        this.zoomCallback(e.wheelDelta > 0 ? 1 : -1, dist);
 
         
         // if ()
@@ -353,13 +267,18 @@ class ButtonClick {
     onKeyDown(e) {
         // e.preventDefault();
 
+        let dist = {
+            x: e.clientX,
+            y: e.clientY
+        }
+
         if (e.ctrlKey == true && (e.which == 187 || e.key == '+')) {
             e.preventDefault();
-            this.zoomCallback(1);
+            this.zoomCallback(1, dist);
         }
         if (e.ctrlKey == true && (e.which == 189 || e.key == '-')) {
             e.preventDefault();
-            this.zoomCallback(-1)
+            this.zoomCallback(-1, dist)
         }
 
         if (this.selectedBool) {
@@ -390,16 +309,9 @@ class ButtonClick {
 }
 
 
-class Node {
-    constructor(x, y, type) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-    }
-}
 
 export default class Grid {
-    constructor(canvas) {
+    constructor(canvas, returnInteraction) {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
 
@@ -445,9 +357,16 @@ export default class Grid {
         // this.canvasCover = document.getElementById('grid-canvas-cover');
         // this.coverCtx = this.canvasCover.getContext('2d');
 
-        this.checked = [];
-        this.currentChecked = [];
-        this.path = [];
+        this.pathviz = {
+            checked: [],
+            current: [],
+            path: []
+        }
+
+        // this.colors = {}
+
+        this.running = false;
+        this.returnInteractionCallback = returnInteraction;
 
     }
 
@@ -455,22 +374,16 @@ export default class Grid {
 
         this.drag = new Drag(this.canvas, this.onDrag.bind(this), this.updateGridComponents.bind(this), this.selectComponents.bind(this), this.clearSelected.bind(this), {
             interaction: this.interaction,
-            nodeSize: this.nodeSize,
-            dist: this.dist,
-            zeroPos: this.zeroPos
         });
 
         this.click = new Click(this.canvas, this.updateGridComponents.bind(this), {
             interaction: this.interaction,
-            nodeSize: this.nodeSize,
-            dist: this.dist,
-            zeroPos: this.zeroPos
         });
 
         this.zoom = new Zoom(this.canvas, this.changeZoom.bind(this));
 
         this.buttonClick = new ButtonClick(this.canvas, this.selectInteractions.bind(this), this.changeZoom.bind(this), {
-            selectedBool: this.selected ? true : false,
+            selectedBool: this.selected.length > 0 ? true : false,
         });
 
         this.canvas.width = this.width;
@@ -488,17 +401,16 @@ export default class Grid {
 
 
     calcCords(x, y) {
-        // let cordsX = (this.components.walls[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        // let cordsY = (this.components.walls[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
-    
-        // return {
-        //     x: (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x),
-        //     y: (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y)
-        // }
-
         return [
             (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x),
             (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y)
+        ]
+    }
+
+    transformCords(x, y) {
+        return [
+            this.zeroPos.x + Math.floor((x + this.nodeSize - this.dist.x) / this.nodeSize),
+            this.zeroPos.y + Math.floor((y + this.nodeSize - this.dist.y) / this.nodeSize)
         ]
     }
 
@@ -508,6 +420,9 @@ export default class Grid {
         this.drag.interaction = inter;
 
         this.updateListeners();
+
+        // this.canvas.className = '';
+        // this.canvas.classList.add(inter);
     }
 
 
@@ -544,14 +459,10 @@ export default class Grid {
             this.drawGrid();
         }
         else if (gc == 'run') {
-
             this.run();
-            // let bounds = {
-            //     minX: Number.MAX_SAFE_INTEGER,
-            //     minY: Number.MAX_SAFE_INTEGER,
-            //     maxX: 0,
-            //     maxY: 0
-            // }
+        }
+        else if (gc == 'closeRun') {
+            this.closeRun();
         }
     }
 
@@ -597,10 +508,14 @@ export default class Grid {
 
     }
 
-    updateGridComponents(x, y) {
+    updateGridComponents(cx, cy) {
 
-        this.clearSelected()
-        // console.log(x, y)
+        if (this.selected.length > 0) {
+            this.clearSelected();
+        }
+        
+        let x, y;
+        [x, y] = this.transformCords(cx, cy);
 
         if (!['add', 'remove', 'start', 'end'].includes(this.interaction)) {
             return;
@@ -614,6 +529,7 @@ export default class Grid {
             if (!this.components.walls.some(e => e.x === x && e.y === y)) {
                 this.components.walls.push({x, y});
                 this.drawComponentsGrid(x, y, 'wall');
+                // let raf = window.requestAnimationFrame(() => this.drawComponentsGrid(x, y, 'wall'));
                 // this.updateGridMatrix(x, y);
             }    
         }
@@ -653,17 +569,20 @@ export default class Grid {
 
     clearSelected() {
         // this.coverCtx.clearRect(0, 0, this.width, this.height);
-        this.selected = [];
-        this.buttonClick.selectedBool = false;
-        this.drawGrid();
+        if (this.selected.length > 0) {
+            this.selected = [];
+            this.buttonClick.selectedBool = false;
+            this.drawGrid();
+        }
     }
 
-    selectComponents(start, end, type) {
+    selectComponents(cstart, cend, type) {
 
-        // this.selected = [];
+        let start = {x: 0, y: 0}, end = {x: 0, y: 0};
+        [start.x, start.y] = this.transformCords(cstart.x, cstart.y);
+        [end.x, end.y] = this.transformCords(cend.x, cend.y);
 
-        console.log(start, end, type)
-
+        // console.log(start, end, type)
 
         for (let i = start.x; i < end.x + 1; i++) {
             for (let j = start.y; j < end.y + 1; j++) {
@@ -687,21 +606,6 @@ export default class Grid {
         this.buttonClick.selectedBool = true;
 
         this.drawGrid();
-        
-        // let cordsX = (start.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        // let cordsY = (start.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
-        
-        // if (type == 'add') {
-        //     this.coverCtx.clearRect(cordsX, cordsY, (this.nodeSize * (Math.abs(end.x - start.x) + 1)) + 1, (this.nodeSize * (Math.abs(end.y - start.y) + 1)) + 1)
-        // }
-        // else {
-        //     this.coverCtx.clearRect(0, 0, this.width, this.height);
-        // }
-
-        // this.coverCtx.fillStyle = "#1DA1F240";
-
-        // this.coverCtx.beginPath();
-        // this.coverCtx.fillRect(cordsX, cordsY, (this.nodeSize * (Math.abs(end.x - start.x) + 1)) + 1, (this.nodeSize * (Math.abs(end.y - start.y) + 1)) + 1);
         
     }
 
@@ -729,40 +633,29 @@ export default class Grid {
             }
         }
 
-        // for (let i = this.selected[0].x; i < this.selected[this.selected.length - 1].x + 1; i++) {
-        //     for (let j = this.selected[0].y; j < this.selected[this.selected.length - 1].y + 1; j++) {
-                
-        //         if ((this.components.start.x == i && this.components.start.y == j) || (this.components.end.x == i && this.components.end.y == j)) {
-        //             continue;
-        //         }
-        //         if (type == "delete") {
-        //             if (this.components.walls && this.components.walls.some(e => e.x === i && e.y === j)) {
-        //                 this.components.walls = this.components.walls.filter(e => !(e.x === i && e.y === j));
-        //             }
-        //         }
-        //         else {
-        //             if (this.components.walls && this.components.walls.some(e => e.x === i && e.y === j)) {
-        //                 continue;
-        //             }
-        //             this.components.walls.push({
-        //                 x: i,
-        //                 y: j
-        //             });
-        //         }
-        //     }
-        // }
 
         this.drawGrid();
     }
     
 
-    changeZoom(val) {
+    changeZoom(val, dist) {
         
         if (this.nodeSize + val < 15 || this.nodeSize + val > 60) {
             return;
         }
         
         // this.coverCtx.clearRect(0, 0, this.width, this.height);
+
+        // this.dist = {
+        //     x: this.dist.x - (val * this.nodeSize),
+        //     y: this.dist.y - (val * this.nodeSize)
+        // }
+
+        // this.zeroPos = {
+        //     x: this.zeroPos.x + val,
+        //     y: this.zeroPos.y + val
+        // }
+        
 
         this.nodeSize += val;
         this.rowLen = Math.ceil(window.innerHeight / this.nodeSize);
@@ -776,18 +669,14 @@ export default class Grid {
 
     updateListeners() {
         this.click.interaction = this.interaction;
-        this.click.nodeSize = this.nodeSize;
-        this.click.dist = this.dist;
-        this.click.zeroPos = this.zeroPos;
 
         this.drag.interaction = this.interaction;
-        this.drag.nodeSize = this.nodeSize;
-        this.drag.dist = this.dist;
-        this.drag.zeroPos = this.zeroPos;
     }
 
 
     drawGrid() {
+
+        // console.log('---------------')
 
         let left = this.dist.x + 0.5;
         let top = this.dist.y + 0.5;
@@ -885,26 +774,27 @@ export default class Grid {
 
         // checked and path ///////////////////////////////////////////
         
+
         this.ctx.fillStyle = "#00D1FF";
-        for (let i = 0; i < this.checked.length; i++) {
+        for (let i = 0; i < this.pathviz.checked.length; i++) {
             let cordsX, cordsY;
-            [cordsX, cordsY] = this.calcCords(this.checked[i].x, this.checked[i].y);
+            [cordsX, cordsY] = this.calcCords(this.pathviz.checked[i].x, this.pathviz.checked[i].y);
             
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
         
         this.ctx.fillStyle = "#0057FF";
-        for (let i = 0; i < this.currentChecked.length; i++) {
+        for (let i = 0; i < this.pathviz.current.length; i++) {
             let cordsX, cordsY;
-            [cordsX, cordsY] = this.calcCords(this.currentChecked[i].x, this.currentChecked[i].y);
+            [cordsX, cordsY] = this.calcCords(this.pathviz.current[i].x, this.pathviz.current[i].y);
 
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
 
         this.ctx.fillStyle = "#FFFF00";
-        for (let i = 0; i < this.path.length; i++) {
+        for (let i = 0; i < this.pathviz.path.length; i++) {
             let cordsX, cordsY;
-            [cordsX, cordsY] = this.calcCords(this.path[i].x, this.path[i].y);
+            [cordsX, cordsY] = this.calcCords(this.pathviz.path[i].x, this.pathviz.path[i].y);
 
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
@@ -915,16 +805,17 @@ export default class Grid {
     }
 
     drawComponentsGrid(x, y, type) {
-        let cordsX = (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        let cordsY = (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
+
+        let cordsX, cordsY;
+        [cordsX, cordsY] = this.calcCords(x, y);
 
         if (type == 'wall') {
             this.ctx.fillStyle = "#fff";
         }
-        else if (type == 'checked') {
+        else if (type == 'current') {
             this.ctx.fillStyle = "#0057FF";
         }
-        else if (type == 'current') {
+        else if (type == 'checked') {
             this.ctx.fillStyle = "#00D1FF";
         }
         else if (type == 'path') {
@@ -933,11 +824,68 @@ export default class Grid {
 
         this.ctx.beginPath();
         this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
-        // this.ctx.closePath();
+        
     }
+    // drawComponentsGrid = async (x, y, type) => {
+
+    //     let cordsX, cordsY;
+    //     [cordsX, cordsY] = this.calcCords(x, y);
+
+    //     if (type == 'wall') {
+    //         this.ctx.fillStyle = "#fff";
+    //     }
+    //     else if (type == 'checked') {
+    //         this.ctx.fillStyle = "#0057FF";
+    //     }
+    //     else if (type == 'current') {
+    //         this.ctx.fillStyle = "#00D1FF";
+    //     }
+    //     else if (type == 'path') {
+    //         this.ctx.fillStyle = "#FFFF00";
+    //     }
+
+        
+    //     let tx = cordsX - 5;
+    //     let ty = cordsY - 5;
+    //     let te = this.nodeSize + 20;
+
+    //     console.log(tx, ty, te)
+        
+    //     this.ctx.fillStyle = "#fff";
+    //     this.ctx.beginPath();
+
+    //     for (let i = 0; i < 5; i++) {
+
+    //         this.ctx.clearRect(tx, ty, te + 1, te + 1);
+    //         // this.ctx.beginPath();
+    //         this.ctx.fillRect(tx + 1, ty + 1, te - 1, te - 1);
+
+    //         await waitForSecs(.1);
+    //         // this.ctx.restore();
+
+    //         tx++;
+    //         ty++;
+    //         te -= 2;
+    //     }
+
+    //     this.drawGrid()
+
+    //     function waitForSecs(milisecs) {
+    //         return new Promise(resolve => {
+    //             setTimeout(resolve, milisecs);
+    //         });
+    //     }
+    //     // this.ctx.fillRect(tx + 1, ty + 1, te - 1, te - 1);
+    //     // this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
+
+    //     // raf = window.requestAnimationFrame
+    // }
     undrawComponentsGrid(x, y) {
-        let cordsX = (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        let cordsY = (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
+        let cordsX, cordsY;
+        [cordsX, cordsY] = this.calcCords(x, y);
+
+        // let cordsX = (x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
+        // let cordsY = (y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
 
         this.ctx.clearRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
     }
@@ -950,22 +898,39 @@ export default class Grid {
 
     checkComponents(x, y, type) {
         if (type == 'current') {
-            this.currentChecked.push({
+            // this.currentChecked.push({
+            //     x: x,
+            //     y: y
+            // });
+            this.pathviz.current.push({
                 x: x,
                 y: y
             });
         }
         else if (type == 'checked') {
-            this.currentChecked = this.currentChecked.filter(e => !(e.x === x && e.y === y));
-            this.checked.push({
+            // this.currentChecked = this.currentChecked.filter(e => !(e.x === x && e.y === y));
+            // this.checked.push({
+            //     x: x,
+            //     y: y
+            // });
+
+            this.pathviz.current = this.pathviz.current.filter(e => !(e.x === x && e.y === y));
+            this.pathviz.checked.push({
                 x: x,
                 y: y
             });
         }
         else if (type == 'path') {
-            this.currentChecked = this.currentChecked.filter(e => !(e.x === x && e.y === y));
-            this.checked = this.checked.filter(e => !(e.x === x && e.y === y));
-            this.path.push({
+            // this.currentChecked = this.currentChecked.filter(e => !(e.x === x && e.y === y));
+            // this.checked = this.checked.filter(e => !(e.x === x && e.y === y));
+            // this.path.push({
+            //     x: x,
+            //     y: y
+            // });
+
+            this.pathviz.current = this.pathviz.current.filter(e => !(e.x === x && e.y === y));
+            this.pathviz.checked = this.pathviz.checked.filter(e => !(e.x === x && e.y === y));
+            this.pathviz.path.push({
                 x: x,
                 y: y
             });
@@ -976,7 +941,10 @@ export default class Grid {
             return;
         }
 
-        this.drawGrid()
+        this.drawComponentsGrid(x, y, type);
+
+        // this.drawGrid()
+
         // this.undrawComponentsGrid(x, y);
         // this.drawComponentsGrid(x, y, type);
 
@@ -997,6 +965,10 @@ export default class Grid {
         let checked = [start];
 
         while (queue.length > 0) {
+
+            // if (!this.running) {
+            //     return;
+            // }
 
             let curr = queue.shift();
 
@@ -1024,6 +996,9 @@ export default class Grid {
             ]
 
             if (curr.x != start.x || curr.y != start.y) {
+                if (!this.running) {
+                    return;
+                }
                 checkComponents(curr.x, curr.y, 'checked');
             }
             
@@ -1080,6 +1055,10 @@ export default class Grid {
                 //     console.log(boundCross, x, y);
                 // }
 
+                if (!this.running) {
+                    return;
+                }
+
                 checkComponents(x, y, 'current');
                 
                 await waitForSecs(1);
@@ -1090,6 +1069,11 @@ export default class Grid {
                 
                 let path = curr.path;
                 for (let i = 0; i < path.length; i++) {
+
+                    if (!this.running) {
+                        return;
+                    }
+
                     checkComponents(path[i].x, path[i].y, 'path');
                     await waitForSecs(100);
                 }
@@ -1106,8 +1090,11 @@ export default class Grid {
         }
 
     }
+    
 
     run() {
+        this.running = true;
+        this.changeInteraction('hand');
 
         let bounds = {
             minX: Math.min(this.components.start.x, this.components.end.x),
@@ -1139,12 +1126,42 @@ export default class Grid {
             maxY: bounds.maxY + 1,
         }
 
-        console.log(bounds)
+        document.getElementById('run-btn').classList.add('hidden');
+        document.getElementById('close-run-btn').classList.remove('hidden');
 
+        // document.querySelectorAll('.toolbar').forEach
+        document.querySelectorAll('.toolbar').forEach(tb => {
+            if (tb.id == 'tb-run') {
+                return;
+            }
+            tb.classList.add('disabled');
+        });
 
         this.BFS(this.components.start, this.components.end, this.components.walls, bounds, this.checkComponents.bind(this));
 
     }
+
+    closeRun() {
+        this.running = false;
+
+        this.pathviz = {
+            checked: [],
+            current: [],
+            path: []
+        }
+
+        document.getElementById('run-btn').classList.remove('hidden');
+        document.getElementById('close-run-btn').classList.add('hidden');
+
+        // document.querySelectorAll('.toolbar').forEach
+        document.querySelectorAll('.toolbar').forEach(tb => {
+            tb.classList.remove('disabled');
+        });
+
+        this.returnInteractionCallback()
+        this.drawGrid();
+    }
+
     
     // createGridMatrix() {
     //     let tempGrid = [];
