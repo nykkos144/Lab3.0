@@ -8,7 +8,7 @@
     <title>Sandbox | Lab 3.0</title>
     <link rel="shortcut icon" href="./assets/logo.svg" type="image/x-icon">
 
-    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./styles/index.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -254,7 +254,7 @@
         </div>
     </div>
 
-    <div class="toolbar side bottom" style="left: 50%; transform: translateX(-50%);">
+    <div class="toolbar side bottom" id="tb-movement" style="left: 50%; transform: translateX(-50%);">
         <div class="tb-item selected" id="hand-btn">
             <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#clip0_92_15)">
@@ -288,6 +288,66 @@
         </div>
     </div>
 
+
+    <div class="toolbar side bottom disabled" id="tb-run-control" style="left: 50%; transform: translateX(-50%);">
+        <div class="tb-item" id="restart-run-btn">
+            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_206_22)">
+                <path d="M16.5001 18.3334L5.78577 10.0001L16.5001 1.66675V18.3334Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1.5 17.2916V2.70825" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_206_22">
+                <rect width="18" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>                
+            <div class="tbi-helper left">Restart</div>
+        </div>
+        <hr/>
+
+        <div class="tb-item" id="pause-run-btn">
+            <!-- <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.33337 1.66675H5.77782V18.3334H1.33337V1.66675Z" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10.2222 1.66675H14.6666V18.3334H10.2222V1.66675Z" stroke="#8B8B8B" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg> -->
+            <svg width="10" height="18" viewBox="0 0 10 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="0.75" y1="0.75" x2="0.75" y2="17.25" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="8.75" y1="0.75" x2="8.75" y2="17.25" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>  
+            <div class="tbi-helper top">Pause</div>
+        </div>
+
+        <div class="tb-item hidden" id="continue-run-btn">
+            <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_140_60)">
+                <path d="M1.33325 1.58252L14.6666 10L1.33325 18.4175V1.58252Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <clipPath id="clip0_140_60">
+                <rect width="16" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg>
+
+            <div class="tbi-helper top">Run</div>
+        </div>
+
+        <hr/>
+        <div class="tb-item" id="skip-run-btn">
+            <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_206_19)">
+                <path d="M1.5 1.66675L12.2143 10.0001L1.5 18.3334V1.66675Z" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16.5 2.70825V17.2916" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                <clipPath id="clip0_206_19">
+                <rect width="18" height="20" fill="white"/>
+                </clipPath>
+                </defs>
+            </svg> 
+            <div class="tbi-helper right">Skip</div>
+        </div>
+    </div>
 
 
     <div id="menu-container">

@@ -1,8 +1,7 @@
 import Grid from './modules/Grid.js';
 
-import { tickSvg, weightSvg, infoSvg } from './assets/jsx.js';
+import { tickSvg, weightSvg, infoSvg, xSvg, smallXSvg, arrDown } from './assets/jsx.js';
 
-// let interaction = 'drag';
 
 
 class Sandbox {
@@ -13,6 +12,7 @@ class Sandbox {
             {
                 id: 0,
                 name: "Breadth-first Search",
+                function: 'BFS',
                 closest: true,
                 weight: false,
                 data: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus nisl tincidunt eget nullam non nisi est. Ut tellus elementum sagittis vitae et leo duis ut diam. Turpis massa sed elementum tempus egestas. Euismod quis viverra nibh cras pulvinar mattis nunc sed blandit.",
@@ -21,6 +21,7 @@ class Sandbox {
             {
                 id: 1,
                 name: "Dijkstra's",
+                function: 'Dijkstra',
                 closest: true,
                 weight: true,
                 data: "Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks. It was conceived by computer scientist Edsger W. Dijkstra in 1956 and published three years later. The algorithm exists in many variants. Dijkstra's original algorithm found the shortest path between two given nodes, but a more common variant fixes a single node as the 'source' node and finds shortest paths from the source to all other nodes in the graph, producing a shortest-path tree."
@@ -28,6 +29,7 @@ class Sandbox {
             {
                 id: 2,
                 name: "A* Search",
+                function: 'AStar',
                 closest: true,
                 weight: true,
                 data: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus nisl tincidunt eget nullam non nisi est. Ut tellus elementum sagittis vitae et leo duis ut diam. Turpis massa sed elementum tempus egestas. Euismod quis viverra nibh cras pulvinar mattis nunc sed blandit."
@@ -35,6 +37,7 @@ class Sandbox {
             {
                 id: 3,
                 name: "Greedy Best-first Search",
+                function: 'GBFS',
                 closest: false,
                 weight: true,
                 data: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus nisl tincidunt eget nullam non nisi est. Ut tellus elementum sagittis vitae et leo duis ut diam. Turpis massa sed elementum tempus egestas. Euismod quis viverra nibh cras pulvinar mattis nunc sed blandit."
@@ -42,6 +45,7 @@ class Sandbox {
             {
                 id: 4,
                 name: "Depth-first Search",
+                function: 'DFS',
                 closest: false,
                 weight: false,
                 data: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus nisl tincidunt eget nullam non nisi est. Ut tellus elementum sagittis vitae et leo duis ut diam. Turpis massa sed elementum tempus egestas. Euismod quis viverra nibh cras pulvinar mattis nunc sed blandit."
@@ -49,11 +53,45 @@ class Sandbox {
             {
                 id: 5,
                 name: "Bidirectional Swarm",
+                function: 'BSwarm',
                 closest: false,
                 weight: true,
                 data: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus nisl tincidunt eget nullam non nisi est. Ut tellus elementum sagittis vitae et leo duis ut diam. Turpis massa sed elementum tempus egestas. Euismod quis viverra nibh cras pulvinar mattis nunc sed blandit."
             },
 
+        ]
+
+        this.settingsList = [
+            {
+                id: 0,
+                name: "Algorithm speed",
+                items: [
+                    {
+                        id: 0,
+                        name: '',
+                        type: 'slider',
+                        function: 'temp'
+                    }
+                ]
+            },
+            {
+                id: 1,
+                name: "Personalization",
+                items: [
+                    {
+                        id: 0,
+                        name: 'Theme',
+                        type: 'dropdown',
+                        function: 'temp'
+                    },
+                    {
+                        id: 1,
+                        name: 'Palette',
+                        type: 'dropdown',
+                        function: 'temp'
+                    }
+                ]
+            }
         ]
 
 
@@ -77,6 +115,7 @@ class Sandbox {
         //     pointer: document.getElementById('pointer-btn')
         // }
 
+
         this.btns = {
             interactions: {
                 add: document.getElementById('add-btn'),
@@ -97,7 +136,11 @@ class Sandbox {
                 delete: document.getElementById('delete-btn'),
                 refresh: document.getElementById('refresh-btn'),
                 run: document.getElementById('run-btn'),
-                closeRun: document.getElementById('close-run-btn')
+                closeRun: document.getElementById('close-run-btn'),
+                restartRun: document.getElementById('restart-run-btn'),
+                pauseRun: document.getElementById('pause-run-btn'),
+                continueRun: document.getElementById('continue-run-btn'),
+                skipRun: document.getElementById('skip-run-btn')
             }
 
         }
@@ -141,9 +184,9 @@ class Sandbox {
 
         if (type == 'alg') {
                         
-            for (let id in this.algList) {
-                let alg = this.algList[id];
-                let el = `<div class="menu-item ${ alg.id == this.alg ? 'selected ' : ''} ">` +
+            for (let i = 0; i < this.algList.length; i++) {
+                let alg = this.algList[i];
+                let el = `<div class="menu-item alg ${ alg.id == this.alg ? 'selected ' : ''} ">` +
                             `<label for="" class="mi-main">${ alg.name }</label>` +
                             '<div class="mi-icons pointers">' +
                                 `${ alg.closest ? tickSvg : '' }` +
@@ -160,48 +203,55 @@ class Sandbox {
                 menu.insertAdjacentHTML('beforeend', el);
                 menu.insertAdjacentHTML('beforeend', '<hr/>');
 
-                let menuItem =  document.getElementsByClassName('menu-item');
-                menuItem[id].addEventListener('click', (e) => {
+                let menuItem = document.getElementsByClassName('menu-item');
+
+                menuItem[i].addEventListener('click', (e) => {
                     
-                    // document.querySelectorAll('.menu-item').forEach(item => {
-                    //     item.classList.remove('open');
-                    // });
-
                     if (e.target.classList.contains('info-cont')) {
-
-                        console.log(menuItem[id])
                         
-                        if (menuItem[id].classList.contains('open')) {
-                            // console.log('-0-')
-                            menuItem[id].classList.remove('open');
-                            menuItem[id].style.height = '90px';
+                        if (menuItem[i].classList.contains('open')) {
+                            menuItem[i].classList.remove('open');
+                            menuItem[i].style.height = '90px';
+                            switchInfo(menuItem[i], 'info');
                             return;
                         }
-
-                        
+  
                         document.querySelectorAll('.menu-item').forEach(item => {
                             item.classList.remove('open');
                             item.style.height = '90px';
+                            switchInfo(item, 'info');
                         });
-                        menuItem[id].classList.add('open');
-                        menuItem[id].style.height = menuItem[id].scrollHeight + 'px';
-                            // e.path[0].classList.add('open');
+                        menuItem[i].classList.add('open');
+                        menuItem[i].style.height = menuItem[i].scrollHeight + 'px';
+                        
+                        switchInfo(menuItem[i], 'x');
+
                     } else {
 
                         document.querySelectorAll('.menu-item').forEach(item => {
                             item.style.height = '90px';
                             item.classList.remove('open');
                             item.classList.remove('selected');
+                            switchInfo(item, 'info');
                         });
 
-                        this.alg = id;
+                        this.alg = i;
+                        this.grid.changeAlg(i);
 
-                        document.querySelectorAll('.menu-item')[id].classList.add('selected');
+                        document.querySelectorAll('.menu-item')[i].classList.add('selected');
 
                     }
                     // console.log(e.target.classList.contains('info-cont'));
 
-                }, id);
+                }, i);
+            }
+
+            function switchInfo(elem, to) {
+
+                let info = elem.getElementsByClassName('mi-icons')[1].getElementsByClassName('info-cont')[0];
+                while(info.firstChild && info.removeChild(info.firstChild));
+                info.insertAdjacentHTML('beforeend', to == 'x' ? smallXSvg : infoSvg);
+
             }
 
         }
@@ -210,6 +260,38 @@ class Sandbox {
         }
         else if (type == 'settings') {
 
+            for (let i = 0; i < this.settingsList.length; i++) {
+                let setting = this.settingsList[i];
+                let el = `<div class="menu-item setting open ">` +
+                            `<label class="mi-main">${ setting.name }</label>` +
+                            '<div class="mi-icons arrow">' +
+                                `${ arrDown }` +
+                            '</div>' +
+                            '<div class="mi-item-cont">' +
+                                
+                            '</div>'
+                        '</div>'
+                        // '<hr/>'
+
+                menu.insertAdjacentHTML('beforeend', el);
+                menu.insertAdjacentHTML('beforeend', '<hr/>');
+
+                let menuItem = document.getElementsByClassName('menu-item');
+
+                for (let j = 0; j < setting.items.length; j++) {
+                    let item = setting.items[j];
+
+                    let itemCont = '<div class="mi-item">' +
+                        `<label>${ item.name }</label>` +
+                    '</div>'
+
+
+                    menuItem[i].getElementsByClassName('mi-item-cont')[0].insertAdjacentHTML('beforeend', itemCont);
+
+
+
+                }
+            }
         }
         else if (type == 'upload') {
 
@@ -254,15 +336,6 @@ class Sandbox {
         this.grid.changeInteraction(this.interaction);
     }
 
-    // BFS() {
-
-    // }
-
-
-
-    // run() {
-    //     console.log('---')
-    // }
 
 }
 

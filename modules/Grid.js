@@ -1,4 +1,4 @@
-
+import Algs from "./Algs.js";
 
 
 
@@ -363,10 +363,40 @@ export default class Grid {
             path: []
         }
 
-        // this.colors = {}
+        this.colors = {
+            stroke: '#252525',
+            background: '#000',
+            select: {
+                background: '#1DA1F240',
+                stroke: '#234459'
+            },
+            start: '#00FF00',
+            end: '#FF0000',
 
-        this.running = false;
+
+            wall: '#fff',
+            checked: '#00D1FF',
+            current: '#0057FF',
+            path: '#FFFF00' 
+        }
+
+        // this.running = false;
+        this.alg = 0;
+        
         this.returnInteractionCallback = returnInteraction;
+
+        this.runData = {
+            running: false,
+            skip: false,
+            skipPath: false,
+            finished: false,
+            paused: false,
+            pathInd: -1,
+            queue: [],
+            // current: {},
+            checked: [],
+            bounds: []
+        }
 
     }
 
@@ -386,12 +416,13 @@ export default class Grid {
             selectedBool: this.selected.length > 0 ? true : false,
         });
 
+        // this.algs = new Algs();
+
         this.canvas.width = this.width;
         this.canvas.height = this.height;
 
 
         this.drawGrid();
-
     }
 
     onResize() {
@@ -423,6 +454,9 @@ export default class Grid {
 
         // this.canvas.className = '';
         // this.canvas.classList.add(inter);
+    }
+    changeAlg(alg) {
+        this.alg = alg;
     }
 
 
@@ -463,6 +497,18 @@ export default class Grid {
         }
         else if (gc == 'closeRun') {
             this.closeRun();
+        }
+        else if (gc == 'pauseRun') {
+            this.pauseRun();
+        }
+        else if (gc == 'continueRun') {
+            this.continueRun();
+        }
+        else if (gc == 'restartRun') {
+            this.restartRun();
+        }
+        else if (gc == 'skipRun') {
+            this.skipRun();
         }
     }
 
@@ -643,25 +689,24 @@ export default class Grid {
         if (this.nodeSize + val < 15 || this.nodeSize + val > 60) {
             return;
         }
-        
-        // this.coverCtx.clearRect(0, 0, this.width, this.height);
 
-        // this.dist = {
-        //     x: this.dist.x - (val * this.nodeSize),
-        //     y: this.dist.y - (val * this.nodeSize)
-        // }
-
-        // this.zeroPos = {
-        //     x: this.zeroPos.x + val,
-        //     y: this.zeroPos.y + val
-        // }
-        
 
         this.nodeSize += val;
         this.rowLen = Math.ceil(window.innerHeight / this.nodeSize);
         this.colLen = Math.ceil(window.innerWidth / this.nodeSize);
 
-        // console.log(this.nodeSize);
+
+        // let calcDistX = dist.x < window.innerWidth / 2 ? 1 : 2;
+        // let calcDistY = dist.y < window.innerHeight / 2 ? 1 : 2;
+
+        // let calcDistX = dist.x < window.innerWidth / 2 ? 1 + (val / Math.abs(val)) : 2 + (val / Math.abs(val));
+        // let calcDistY = dist.y < window.innerHeight / 2 ? 1 + (val / Math.abs(val)) : 2 + (val / Math.abs(val));
+
+        // this.zeroPos = {
+        //     x: this.zeroPos.x + calcDistX * (val / Math.abs(val)),
+        //     y: this.zeroPos.y + calcDistY * (val / Math.abs(val))
+        // }
+
         this.updateListeners();
 
         this.drawGrid();
@@ -675,8 +720,6 @@ export default class Grid {
 
 
     drawGrid() {
-
-        // console.log('---------------')
 
         let left = this.dist.x + 0.5;
         let top = this.dist.y + 0.5;
@@ -696,12 +739,13 @@ export default class Grid {
             this.ctx.lineTo(right, y);
         }
         
-        this.ctx.lineWidth = 1.5;
-        this.ctx.strokeStyle = "#252525";
+        this.ctx.lineWidth = 1;
+        // this.ctx.strokeStyle = "#252525";
+        this.ctx.strokeStyle = this.colors['stroke'];
 
         this.ctx.stroke();
 
-        this.ctx.fillStyle = "#fff";
+        this.ctx.fillStyle = this.colors['wall'];
         for (let i = 0; i < this.components.walls.length; i++) {
 
             if (this.components.walls[i].x < this.zeroPos.x || this.components.walls[i].x > this.zeroPos.x + this.colLen) {
@@ -713,8 +757,6 @@ export default class Grid {
 
             let cordsX, cordsY;
             [cordsX, cordsY] = this.calcCords(this.components.walls[i].x, this.components.walls[i].y);
-            // let cordsX = (this.components.walls[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-            // let cordsY = (this.components.walls[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
 
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
@@ -723,24 +765,22 @@ export default class Grid {
         // selected ///////////////////////////////////////////
 
         this.ctx.lineWidth = 1;
-        this.ctx.strokeStyle = "#234459";
-        this.ctx.fillStyle = "#1DA1F240";
+
+        this.ctx.strokeStyle = this.colors['select']['stroke'];
+        this.ctx.fillStyle = this.colors['select']['background'];
 
         for (let i = 0; i < this.selected.length; i++) {
             let cordsX, cordsY;
             [cordsX, cordsY] = this.calcCords(this.selected[i].x, this.selected[i].y);
-            // let cordsX = (this.selected[i].x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-            // let cordsY = (this.selected[i].y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
 
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
             this.ctx.strokeRect(cordsX + .5, cordsY + .5, this.nodeSize, this.nodeSize);
         }
 
         // statr and end ///////////////////////////////////////////
-
-        // let startX = (this.components.start.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        // let startY = (this.components.start.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y);
         
+        this.ctx.lineWidth = this.nodeSize / 15 - .5;
+
         let startX, startY;
         [startX, startY] = this.calcCords(this.components.start.x, this.components.start.y);
 
@@ -749,15 +789,10 @@ export default class Grid {
         let startDeltaX = startX + (this.nodeSize - this.startImg.height * ssizer) / 2;
         let startDeltaY = startY + (this.nodeSize - this.startImg.width * ssizer) / 2;
 
-        this.ctx.lineWidth = this.nodeSize / 15 - .5;
-        this.ctx.strokeStyle = "#00FF00";
+        this.ctx.strokeStyle = this.colors['start'];
         this.ctx.strokeRect(startX + 2, startY + 2, this.nodeSize - 3, this.nodeSize - 3);
         this.ctx.drawImage(this.startImg, startDeltaX, startDeltaY, this.startImg.width * ssizer, this.startImg.height * ssizer);
         
-        // let endX = (this.components.end.x - this.zeroPos.x) * this.nodeSize - (this.nodeSize - this.dist.x);
-        // let endY = (this.components.end.y - this.zeroPos.y) * this.nodeSize - (this.nodeSize - this.dist.y); 
-
-
         let endX, endY;
         [endX, endY] = this.calcCords(this.components.end.x, this.components.end.y);
 
@@ -766,16 +801,13 @@ export default class Grid {
         let endDeltaX = endX + (this.nodeSize - this.endImg.height * esizer) / 2;
         let endDeltaY = endY + (this.nodeSize - this.endImg.width * esizer) / 2;
 
-        this.ctx.strokeStyle = "#FF0000";
+        this.ctx.strokeStyle = this.colors['end'];
         this.ctx.strokeRect(endX + 2, endY + 2, this.nodeSize - 3, this.nodeSize - 3);
         this.ctx.drawImage(this.endImg, endDeltaX, endDeltaY, this.endImg.width * esizer, this.endImg.height * esizer);
 
-        // this.ctx.closePath();
-
         // checked and path ///////////////////////////////////////////
         
-
-        this.ctx.fillStyle = "#00D1FF";
+        this.ctx.fillStyle = this.colors['checked'];
         for (let i = 0; i < this.pathviz.checked.length; i++) {
             let cordsX, cordsY;
             [cordsX, cordsY] = this.calcCords(this.pathviz.checked[i].x, this.pathviz.checked[i].y);
@@ -783,7 +815,7 @@ export default class Grid {
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
         
-        this.ctx.fillStyle = "#0057FF";
+        this.ctx.fillStyle = this.colors['current'];
         for (let i = 0; i < this.pathviz.current.length; i++) {
             let cordsX, cordsY;
             [cordsX, cordsY] = this.calcCords(this.pathviz.current[i].x, this.pathviz.current[i].y);
@@ -791,7 +823,7 @@ export default class Grid {
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
 
-        this.ctx.fillStyle = "#FFFF00";
+        this.ctx.fillStyle = this.colors['path'];
         for (let i = 0; i < this.pathviz.path.length; i++) {
             let cordsX, cordsY;
             [cordsX, cordsY] = this.calcCords(this.pathviz.path[i].x, this.pathviz.path[i].y);
@@ -809,18 +841,19 @@ export default class Grid {
         let cordsX, cordsY;
         [cordsX, cordsY] = this.calcCords(x, y);
 
-        if (type == 'wall') {
-            this.ctx.fillStyle = "#fff";
-        }
-        else if (type == 'current') {
-            this.ctx.fillStyle = "#0057FF";
-        }
-        else if (type == 'checked') {
-            this.ctx.fillStyle = "#00D1FF";
-        }
-        else if (type == 'path') {
-            this.ctx.fillStyle = "#FFFF00";
-        }
+        this.ctx.fillStyle = this.colors[type];
+        // if (type == 'wall') {
+        //     this.ctx.fillStyle = "#fff";
+        // }
+        // else if (type == 'current') {
+        //     this.ctx.fillStyle = "#0057FF";
+        // }
+        // else if (type == 'checked') {
+        //     this.ctx.fillStyle = "#00D1FF";
+        // }
+        // else if (type == 'path') {
+        //     this.ctx.fillStyle = "#FFFF00";
+        // }
 
         this.ctx.beginPath();
         this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
@@ -891,12 +924,13 @@ export default class Grid {
     }
 
 
-    // drawAlg(x, y) {
-
-    // }
-
 
     checkComponents(x, y, type) {
+
+        // if (!this.run.running) {
+        //     return;
+        // }
+
         if (type == 'current') {
             // this.currentChecked.push({
             //     x: x,
@@ -936,213 +970,283 @@ export default class Grid {
             });
         }
 
-
         if (x < this.zeroPos.x || x > this.zeroPos.x + this.colLen || y < this.zeroPos.y || y > this.zeroPos.y + this.rowLen) {
             return;
         }
 
         this.drawComponentsGrid(x, y, type);
-
-        // this.drawGrid()
-
-        // this.undrawComponentsGrid(x, y);
-        // this.drawComponentsGrid(x, y, type);
-
     }
 
-    BFS = async (start, end, walls, bounds, checkComponents) => {
-        
-        let exitFound = false;
-        let noExit = false;
+    // BFS = async (start, end, walls, bounds, checkComponents, runData) => {
 
-        let queue = [];
-        queue.push({
-            x: start.x,
-            y: start.y,
-            path: []
-        });
+    //     if (runData && runData.finished) {
+    //         return;
+    //     }
 
-        let checked = [start];
+    //     // let exitFound = false;
+    //     let exitFound = runData ? runData.pathInd == -1 ? false : true : false;
+    //     let noExit = false;
 
-        while (queue.length > 0) {
+    //     // if (runData) {
+    //     //     console.log('----')
+    //     // }
 
-            // if (!this.running) {
-            //     return;
-            // }
+    //     let queue = [];
+    //     let checked = [];
 
-            let curr = queue.shift();
+    //     if (runData) {
+    //         queue = runData.queue;
+    //         checked = runData.checked;
+    //     }
+    //     else {
+    //         queue.push({
+    //             x: start.x,
+    //             y: start.y,
+    //             path: []
+    //         });
+    //         checked = [start];
+    //     }
 
-            const neighbors = [
-                {
-                    x: curr.x + 1,
-                    y: curr.y,
-                    path: curr.path
-                },
-                {
-                    x: curr.x - 1,
-                    y: curr.y,
-                    path: curr.path
-                },
-                {
-                    x: curr.x,
-                    y: curr.y + 1,
-                    path: curr.path
-                },
-                {
-                    x: curr.x,
-                    y: curr.y - 1,
-                    path: curr.path
-                }
-            ]
+    //     // let checked = [start];
 
-            if (curr.x != start.x || curr.y != start.y) {
-                if (!this.running) {
-                    return;
-                }
-                checkComponents(curr.x, curr.y, 'checked');
-            }
+    //     while (queue.length > 0) {
+
+    //         // if (!this.running) {
+    //         //     return;
+    //         // }
             
-            for (let i = 0; i < neighbors.length; i++) {
-                const x = neighbors[i].x;
-                const y = neighbors[i].y;
-                
-                // if (x < bounds.minX || y < bounds.minY || x > bounds.maxX || y > bounds.maxY) {
-                //     boundCross++;
-                //     // continue;
-                // }
-                if (walls.some(e => e.x === x && e.y === y) || checked.some(e => e.x === x && e.y === y)) {
-                    continue;
-                }
-                
-                if (x == start.x && y == start.y) {
-                    continue;
-                }
-                if (x == end.x && y == end.y) {
-                    exitFound = true;
-                    continue;
-                }
-                
-                let newPath = neighbors[i].path.slice();
-                newPath.push({
-                    x: x,
-                    y: y
-                });
-                queue.push({
-                    x: x,
-                    y: y,
-                    path: newPath
-                });
-                
-                checked.push({
-                    x: x,
-                    y: y,
-                });
+    //         let curr = queue.shift();
 
-                // if (x == bounds.minX && (y >= bounds.minY && y <= bounds.maxY)) {
-                //     boundCross++;
-                //     console.log(boundCross, x, y);
-                // }
-                // if (x == bounds.maxX && (y >= bounds.minY && y <= bounds.maxY)) {
-                //     boundCross++;
-                //     console.log(boundCross, x, y);
-                // }
-                // if (y == bounds.minY && (x >= bounds.minX && x <= bounds.maxX)) {
-                //     boundCross++;
-                //     console.log(boundCross, x, y);
-                // }
-                // if (y == bounds.minY && (x >= bounds.minX && x <= bounds.maxX)) {
-                //     boundCross++;
-                //     console.log(boundCross, x, y);
-                // }
+    //         const neighbors = [
+    //             {
+    //                 x: curr.x + 1,
+    //                 y: curr.y,
+    //                 path: curr.path
+    //             },
+    //             {
+    //                 x: curr.x - 1,
+    //                 y: curr.y,
+    //                 path: curr.path
+    //             },
+    //             {
+    //                 x: curr.x,
+    //                 y: curr.y + 1,
+    //                 path: curr.path
+    //             },
+    //             {
+    //                 x: curr.x,
+    //                 y: curr.y - 1,
+    //                 path: curr.path
+    //             }
+    //         ]
 
-                if (!this.running) {
-                    return;
-                }
+    //         if (curr.x != start.x || curr.y != start.y) {
+    //             if (!this.runData.running) {
+    //                 queue.unshift(curr);
+    //                 this.runData.queue = queue;
+    //                 this.runData.current = curr;
+    //                 this.runData.checked = checked;
+    //                 return;
+    //             }
+    //             checkComponents(curr.x, curr.y, 'checked');
+    //         }
+            
+    //         for (let i = 0; i < neighbors.length; i++) {
+    //             const x = neighbors[i].x;
+    //             const y = neighbors[i].y;
+                
+    //             // if (x < bounds.minX || y < bounds.minY || x > bounds.maxX || y > bounds.maxY) {
+    //             //     boundCross++;
+    //             //     // continue;
+    //             // }
 
-                checkComponents(x, y, 'current');
+    //             if (walls.some(e => e.x === x && e.y === y) || checked.some(e => e.x === x && e.y === y)) {
+    //                 continue;
+    //             }
                 
-                await waitForSecs(1);
+    //             if (x == start.x && y == start.y) {
+    //                 continue;
+    //             }
+    //             if (x == end.x && y == end.y) {
+    //                 exitFound = true;
+    //                 continue;
+    //             }
                 
-            }
+    //             let newPath = neighbors[i].path.slice();
+    //             newPath.push({
+    //                 x: x,
+    //                 y: y
+    //             });
+    //             queue.push({
+    //                 x: x,
+    //                 y: y,
+    //                 path: newPath
+    //             });
+                
+    //             checked.push({
+    //                 x: x,
+    //                 y: y,
+    //             });
+
+    //             // if (x == bounds.minX && (y >= bounds.minY && y <= bounds.maxY)) {
+    //             //     boundCross++;
+    //             //     console.log(boundCross, x, y);
+    //             // }
+    //             // if (x == bounds.maxX && (y >= bounds.minY && y <= bounds.maxY)) {
+    //             //     boundCross++;
+    //             //     console.log(boundCross, x, y);
+    //             // }
+    //             // if (y == bounds.minY && (x >= bounds.minX && x <= bounds.maxX)) {
+    //             //     boundCross++;
+    //             //     console.log(boundCross, x, y);
+    //             // }
+    //             // if (y == bounds.minY && (x >= bounds.minX && x <= bounds.maxX)) {
+    //             //     boundCross++;
+    //             //     console.log(boundCross, x, y);
+    //             // }
+
+    //             if (!this.runData.running) {
+    //                 queue.unshift(curr);
+    //                 this.runData.queue = queue;
+    //                 this.runData.current = curr;
+    //                 this.runData.checked = checked;
+    //                 return;
+    //             }
+
+    //             checkComponents(x, y, 'current');
+                
+    //             // if (x < this.zeroPos.x || x > this.zeroPos.x + this.colLen || y < this.zeroPos.y || y > this.zeroPos.y + this.rowLen) {
+    //             //     continue;
+    //             // }
+
+    //             if (this.runData.skip) {
+    //                 continue;
+    //             }
+
+    //             await waitForSecs(1);
+                
+    //         }
                         
-            if (exitFound) {
+    //         if (exitFound) {
                 
-                let path = curr.path;
-                for (let i = 0; i < path.length; i++) {
+    //             let path = curr.path;
 
-                    if (!this.running) {
-                        return;
-                    }
+    //             console.log(runData)
+    //             let startInd = runData ? runData.pathInd == -1 ? 0 : runData.pathInd : 0;
+    //             for (let i = startInd; i < path.length; i++) {
 
-                    checkComponents(path[i].x, path[i].y, 'path');
-                    await waitForSecs(100);
-                }
+    //                 if (!this.runData.running) {
+    //                     queue.unshift(curr);
+    //                     this.runData.queue = queue;
+    //                     this.runData.current = curr;
+    //                     this.runData.checked = checked;   
+    //                     this.runData.pathInd = i;
+    //                     return;
+    //                 }
 
-                break;
-            }
+    //                 checkComponents(path[i].x, path[i].y, 'path');
 
-        }
+    //                 if (this.runData.skipPath) {
+    //                     continue;
+    //                 }
+    
+    //                 await waitForSecs(100);
+    //             }
 
-        function waitForSecs(milisecs) {
-            return new Promise(resolve => {
-                setTimeout(resolve, milisecs);
-            });
-        }
+    //             this.runData.finished = true;
+    //             return;
+    //         }
 
-    }
+    //     }
+
+    //     function waitForSecs(milisecs) {
+    //         return new Promise(resolve => {
+    //             setTimeout(resolve, milisecs);
+    //         });
+    //     }
+
+
+
+    // }
     
 
     run() {
-        this.running = true;
+        // this.running = true;
+        // this.runData.running = true;
+        // this.runData.skip = false;
+
+        // this.algs.alg = this.alg;
+        // this.algs.start = this.components.start;
+        // this.algs.end = this.components.end;
+        // this.algs.walls = this.components.walls;
+
+        this.algs = new Algs(this.alg, this.components.start, this.components.end, this.components.walls, [], this.checkComponents.bind(this));
+        // this.algs.init();
+        
+        // this.algs.BFS();
+
+        // this.runData = {
+        //     running: true,
+        //     skip: false,
+        //     skipPath: false,
+        //     finished: false,
+        //     paused: false,
+        //     pathInd: -1,
+        //     queue: [],
+        //     // current: {},
+        //     checked: [],
+        //     bounds: []
+        // }
+
         this.changeInteraction('hand');
 
-        let bounds = {
-            minX: Math.min(this.components.start.x, this.components.end.x),
-            minY: Math.min(this.components.start.y, this.components.end.y),
-            maxX: Math.max(this.components.start.x, this.components.end.x),
-            maxY: Math.max(this.components.start.y, this.components.end.y)
-        }
+        // let bounds = {
+        //     minX: Math.min(this.components.start.x, this.components.end.x),
+        //     minY: Math.min(this.components.start.y, this.components.end.y),
+        //     maxX: Math.max(this.components.start.x, this.components.end.x),
+        //     maxY: Math.max(this.components.start.y, this.components.end.y)
+        // }
 
-        this.components.walls.forEach((wall) => {
-            if (wall.x < bounds.minX) {
-                bounds.minX = wall.x;
-            }
-            if (wall.x > bounds.maxX) {
-                bounds.maxX = wall.x;
-            }
+        // this.components.walls.forEach((wall) => {
+        //     if (wall.x < bounds.minX) {
+        //         bounds.minX = wall.x;
+        //     }
+        //     if (wall.x > bounds.maxX) {
+        //         bounds.maxX = wall.x;
+        //     }
 
-            if (wall.y < bounds.minY) {
-                bounds.minY = wall.y;
-            }
-            if (wall.y > bounds.maxY) {
-                bounds.maxY = wall.y;
-            }
-        });
+        //     if (wall.y < bounds.minY) {
+        //         bounds.minY = wall.y;
+        //     }
+        //     if (wall.y > bounds.maxY) {
+        //         bounds.maxY = wall.y;
+        //     }
+        // });
 
-        bounds = {
-            minX: bounds.minX - 1,
-            minY: bounds.minY - 1,
-            maxX: bounds.maxX + 1,
-            maxY: bounds.maxY + 1,
-        }
+        // this.runData.bounds = {
+        //     minX: bounds.minX - 1,
+        //     minY: bounds.minY - 1,
+        //     maxX: bounds.maxX + 1,
+        //     maxY: bounds.maxY + 1,
+        // }
 
         document.getElementById('run-btn').classList.add('hidden');
         document.getElementById('close-run-btn').classList.remove('hidden');
+        document.getElementById('tb-run-control').classList.remove('disabled');
 
-        // document.querySelectorAll('.toolbar').forEach
         document.querySelectorAll('.toolbar').forEach(tb => {
-            if (tb.id == 'tb-run') {
+            if (tb.id == 'tb-run' || tb.id == 'tb-run-control') {
                 return;
             }
             tb.classList.add('disabled');
         });
 
-        this.BFS(this.components.start, this.components.end, this.components.walls, bounds, this.checkComponents.bind(this));
+        // this.BFS(this.components.start, this.components.end, this.components.walls, this.runData.bounds, this.checkComponents.bind(this));
 
     }
 
     closeRun() {
-        this.running = false;
+        this.algs.closeRun();
 
         this.pathviz = {
             checked: [],
@@ -1152,51 +1256,59 @@ export default class Grid {
 
         document.getElementById('run-btn').classList.remove('hidden');
         document.getElementById('close-run-btn').classList.add('hidden');
+        document.getElementById('tb-run-control').classList.add('disabled');
 
-        // document.querySelectorAll('.toolbar').forEach
+        document.getElementById('pause-run-btn').classList.remove('hidden');
+        document.getElementById('continue-run-btn').classList.add('hidden');
+
         document.querySelectorAll('.toolbar').forEach(tb => {
+            if (tb.id == 'tb-run-control') {
+                return;
+            }
+
             tb.classList.remove('disabled');
         });
 
-        this.returnInteractionCallback()
+        this.returnInteractionCallback();
         this.drawGrid();
     }
 
+    pauseRun() {
+        this.algs.pauseRun();
+
+        document.getElementById('pause-run-btn').classList.add('hidden');
+        document.getElementById('continue-run-btn').classList.remove('hidden');
+    }
+
+    continueRun() {
+        this.algs.continueRun();
+
+        document.getElementById('pause-run-btn').classList.remove('hidden');
+        document.getElementById('continue-run-btn').classList.add('hidden');
+    }
     
-    // createGridMatrix() {
-    //     let tempGrid = [];
-    //     for (let i = 0; i < 3; i++) {
-    //         tempGrid.push(Array(this.components.end.x - this.components.start.x + 3).fill(null));
-    //     }
-    //     tempGrid[1][1] = 's';
-    //     tempGrid[1][tempGrid[1].length - 2] = 'e';
+    restartRun() {
+        this.algs.restartRun();
+
+        this.pathviz = {
+            checked: [],
+            current: [],
+            path: []
+        }
+
+        this.drawGrid();
         
-    //     console.log(tempGrid);
+        document.getElementById('pause-run-btn').classList.remove('hidden');
+        document.getElementById('continue-run-btn').classList.add('hidden');
+    }
 
-    //     return tempGrid;
-    // }
+    skipRun() {
+        this.algs.skipRun();
 
-    // updateGridMatrix(x, y) {
-        
-    //     if (this.components.walls.length == 0) {
-    //         return;
-    //     }
+        document.getElementById('pause-run-btn').classList.remove('hidden');
+        document.getElementById('continue-run-btn').classList.add('hidden');
+    }
 
-    //     let minX = this.components.walls[0].x;
-    //     let minY = this.components.walls[0].y;
-
-    //     for (let i = 0; i < this.components.walls.length; i++) {
-    //         if (this.components.walls[i].x < minX) {
-    //             minX = this.components.walls[i].x;
-    //         }
-    //         if (this.components.walls[i].y < minY) {
-    //             minY = this.components.walls[i].y;
-    //         }
-    //     }
-
-
-    //     console.log(minX, minY);
-    // }
 
 }
 

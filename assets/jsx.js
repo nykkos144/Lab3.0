@@ -32,3 +32,43 @@ export let infoSvg = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none
     '</clipPath>' +
     '</defs>' +
 '</svg>'  
+
+
+export let xSvg = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<g clip-path="url(#clip0_177_2)">' +
+    '<path d="M16.5 1.5L1.5 16.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M1.5 1.5L16.5 16.5" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</g>' +
+    '<defs>' +
+    '<clipPath id="clip0_177_2">' +
+    '<rect width="18" height="18" fill="white"/>' +
+    '</clipPath>' +
+    '</defs>' +
+'</svg>'
+
+export let smallXSvg = '</svg>' +
+    '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<g clip-path="url(#clip0_177_2)">' +
+    '<path d="M12.8334 1.16675L1.16675 12.8334" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M1.16675 1.16675L12.8334 12.8334" stroke="#8B8B8B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</g>' +
+    '<defs>' +
+    '<clipPath id="clip0_177_2">' +
+    '<rect width="14" height="14" fill="white"/>' +
+    '</clipPath>' +
+    '</defs>' +
+'</svg>'
+
+
+export let arrDown = '<svg width="16" height="8" viewBox="0 0 16 8" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<g clip-path="url(#clip0_192_813)">' +
+    '<path d="M1.33325 1L7.99992 7L14.6666 1" stroke="#B0B0B0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</g>' +
+    '<defs>' +
+    '<clipPath id="clip0_192_813">' +
+    '<rect width="16" height="8" fill="white"/>' +
+    '</clipPath>' +
+    '</defs>' +
+'</svg>'
+
+
