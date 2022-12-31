@@ -1,0 +1,305 @@
+.sc-dropdown, .sc-item {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-radius: 3px;
+  overflow: hidden;
+  transition: height 0.2s;
+}
+
+.sc-dropdown .sc-dropdown-item-cont {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  background-color: #202020;
+  transition: top 0.2s, height 0.2s;
+}
+
+.sc-dropdown .sc-dropdown-item {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  background-color: inherit;
+  color: #B0B0B0;
+  padding: 15px 0px;
+  padding-left: 30px;
+  transition: filter 0.1s;
+}
+
+.sc-dropdown .sc-dropdown-item:hover {
+  filter: brightness(1.2);
+}
+
+.sc-dropdown svg {
+  pointer-events: none;
+  position: absolute;
+  top: 27px;
+  right: 30px;
+  transition: transform 0.2s;
+}
+
+.sc-dropdown.open {
+  overflow: auto;
+  overflow-y: hidden;
+}
+
+.sc-dropdown.open svg {
+  transform: rotate(180deg);
+}
+
+.sc-dropdown .sc-dropdown-item-extra {
+  pointer-events: none;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 240px;
+  height: 100%;
+  border-radius: 2px;
+  overflow: hidden;
+  transition: width 0.2s;
+}
+
+.sc-dropdown .sc-dropdown-item-extra div {
+  width: 100%;
+  height: 100%;
+}
+
+.sc-dropdown .sc-dropdown-item-extra.full {
+  width: calc(100% - 30px);
+}
+
+.sc-dropdown .sc-dropdown-item-identifiers {
+  pointer-events: none;
+  position: absolute;
+  top: 15px;
+  left: 30px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 240px;
+  height: 30px;
+}
+
+.sc-dropdown .sc-dropdown-item-identifiers div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.1882352941);
+}
+
+.sc-slider {
+  overflow: visible;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin-top: -5px;
+}
+
+.sc-slider input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  width: 100%;
+  height: 3px;
+  background-color: #202020;
+  border-radius: 1000px;
+  border: none;
+  margin: 0px;
+  transition: all 0.1s;
+}
+
+.sc-slider input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+          appearance: none;
+  cursor: ew-resize;
+  background-color: #00FF00;
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  -webkit-transition: background-color 0.1s;
+  transition: background-color 0.1s;
+}
+
+.sc-slider input:hover::-webkit-slider-thumb {
+  background-color: #00c200;
+}
+
+.sc-slider input::-webkit-slider-runnable-track {
+  border-radius: 1000px;
+  border: none;
+  box-shadow: none;
+}
+
+.sc-slider input::-ms-fill-lower {
+  background-color: #00FF00;
+}
+
+.sc-slider div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin-top: 10px;
+}
+
+.sc-slider div label {
+  display: block;
+  color: #404040;
+  font-size: 14px;
+  text-align: center;
+  transition: color 0.1s;
+}
+
+.sc-slider div label:first-of-type {
+  text-align: start;
+}
+
+.sc-slider div label:last-of-type {
+  text-align: end;
+}
+
+.sc-slider div label.active {
+  color: #00FF00;
+}
+
+.sc-toggle {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  overflow: visible;
+}
+
+.sc-toggle .toggle {
+  cursor: pointer;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  transition: filter 0.2s;
+}
+
+.sc-toggle .toggle input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  cursor: pointer;
+  position: relative;
+  width: 35px;
+  height: 20px;
+  background-color: #252525;
+  border-radius: 1000px;
+  margin: 0px;
+  transition: all 0.1s;
+}
+
+.sc-toggle .toggle div {
+  display: block;
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 20px;
+  height: 20px;
+  background-color: #666666;
+  border-radius: 50%;
+  transition: all 0.1s;
+}
+
+.sc-toggle .toggle.active input {
+  background-color: rgba(0, 255, 0, 0.5019607843);
+}
+
+.sc-toggle .toggle.active div {
+  background-color: #00FF00;
+  left: 100%;
+  transform: translateX(-100%);
+}
+
+.sc-toggle .toggle:hover {
+  filter: brightness(1.2);
+}
+
+.sc-toggle .toggle.active:hover {
+  filter: brightness(0.8);
+}
+
+.sc-picker {
+  overflow: visible;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.sc-picker-item-cont {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.sc-picker-item {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  width: 100%;
+  border-radius: 50%;
+  margin-right: 30px;
+  transition: filter 0.1s, transform 0.2s;
+}
+
+.sc-picker-item:last-of-type {
+  margin-right: 0px;
+}
+
+.sc-picker-item:hover {
+  filter: brightness(0.8);
+}
+
+.sc-picker-item svg {
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(1.1);
+}
+
+.sc-picker-item.active svg {
+  visibility: visible;
+  -webkit-animation: colorSelectAnimation 0.3s;
+          animation: colorSelectAnimation 0.3s;
+}
+
+@-webkit-keyframes colorSelectAnimation {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes colorSelectAnimation {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}/*# sourceMappingURL=setcomp.css.map */

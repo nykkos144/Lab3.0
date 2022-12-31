@@ -214,8 +214,6 @@ class Zoom {
             y: e.clientY
         }
 
-        // console.log(e.wheelDelta);
-
         if (e.ctrlKey == true) {
             this.zoomCallback(e.wheelDelta > 0 ? 2 : -2, dist);
             return;
@@ -310,7 +308,7 @@ class ButtonClick {
 
 
 
-export default class Grid {
+export class Grid {
     constructor(canvas, returnInteraction) {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
@@ -354,13 +352,19 @@ export default class Grid {
         this.startImg = document.getElementById('start-img');
         this.endImg = document.getElementById('end-img');
 
-        // this.canvasCover = document.getElementById('grid-canvas-cover');
-        // this.coverCtx = this.canvasCover.getContext('2d');
-
         this.pathviz = {
             checked: [],
             current: [],
             path: []
+        }
+
+        this.settings = {
+            speed: 2,
+            stayInbounds: false,
+            runNoPath: true,
+            uiColor: 1,
+            theme: 2,
+            palette: 0,
         }
 
         this.colors = {
@@ -372,8 +376,6 @@ export default class Grid {
             },
             start: '#00FF00',
             end: '#FF0000',
-
-
             wall: '#fff',
             checked: '#00D1FF',
             current: '#0057FF',
@@ -451,12 +453,13 @@ export default class Grid {
         this.drag.interaction = inter;
 
         this.updateListeners();
-
-        // this.canvas.className = '';
-        // this.canvas.classList.add(inter);
     }
     changeAlg(alg) {
         this.alg = alg;
+    }
+    updateSettings(setting, value) {
+        this.settings[setting] = value;
+        console.log(this.settings)
     }
 
 
@@ -628,7 +631,6 @@ export default class Grid {
         [start.x, start.y] = this.transformCords(cstart.x, cstart.y);
         [end.x, end.y] = this.transformCords(cend.x, cend.y);
 
-        // console.log(start, end, type)
 
         for (let i = start.x; i < end.x + 1; i++) {
             for (let j = start.y; j < end.y + 1; j++) {
@@ -859,60 +861,6 @@ export default class Grid {
         this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         
     }
-    // drawComponentsGrid = async (x, y, type) => {
-
-    //     let cordsX, cordsY;
-    //     [cordsX, cordsY] = this.calcCords(x, y);
-
-    //     if (type == 'wall') {
-    //         this.ctx.fillStyle = "#fff";
-    //     }
-    //     else if (type == 'checked') {
-    //         this.ctx.fillStyle = "#0057FF";
-    //     }
-    //     else if (type == 'current') {
-    //         this.ctx.fillStyle = "#00D1FF";
-    //     }
-    //     else if (type == 'path') {
-    //         this.ctx.fillStyle = "#FFFF00";
-    //     }
-
-        
-    //     let tx = cordsX - 5;
-    //     let ty = cordsY - 5;
-    //     let te = this.nodeSize + 20;
-
-    //     console.log(tx, ty, te)
-        
-    //     this.ctx.fillStyle = "#fff";
-    //     this.ctx.beginPath();
-
-    //     for (let i = 0; i < 5; i++) {
-
-    //         this.ctx.clearRect(tx, ty, te + 1, te + 1);
-    //         // this.ctx.beginPath();
-    //         this.ctx.fillRect(tx + 1, ty + 1, te - 1, te - 1);
-
-    //         await waitForSecs(.1);
-    //         // this.ctx.restore();
-
-    //         tx++;
-    //         ty++;
-    //         te -= 2;
-    //     }
-
-    //     this.drawGrid()
-
-    //     function waitForSecs(milisecs) {
-    //         return new Promise(resolve => {
-    //             setTimeout(resolve, milisecs);
-    //         });
-    //     }
-    //     // this.ctx.fillRect(tx + 1, ty + 1, te - 1, te - 1);
-    //     // this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
-
-    //     // raf = window.requestAnimationFrame
-    // }
     undrawComponentsGrid(x, y) {
         let cordsX, cordsY;
         [cordsX, cordsY] = this.calcCords(x, y);
@@ -1171,64 +1119,10 @@ export default class Grid {
     
 
     run() {
-        // this.running = true;
-        // this.runData.running = true;
-        // this.runData.skip = false;
-
-        // this.algs.alg = this.alg;
-        // this.algs.start = this.components.start;
-        // this.algs.end = this.components.end;
-        // this.algs.walls = this.components.walls;
 
         this.algs = new Algs(this.alg, this.components.start, this.components.end, this.components.walls, [], this.checkComponents.bind(this));
-        // this.algs.init();
-        
-        // this.algs.BFS();
-
-        // this.runData = {
-        //     running: true,
-        //     skip: false,
-        //     skipPath: false,
-        //     finished: false,
-        //     paused: false,
-        //     pathInd: -1,
-        //     queue: [],
-        //     // current: {},
-        //     checked: [],
-        //     bounds: []
-        // }
 
         this.changeInteraction('hand');
-
-        // let bounds = {
-        //     minX: Math.min(this.components.start.x, this.components.end.x),
-        //     minY: Math.min(this.components.start.y, this.components.end.y),
-        //     maxX: Math.max(this.components.start.x, this.components.end.x),
-        //     maxY: Math.max(this.components.start.y, this.components.end.y)
-        // }
-
-        // this.components.walls.forEach((wall) => {
-        //     if (wall.x < bounds.minX) {
-        //         bounds.minX = wall.x;
-        //     }
-        //     if (wall.x > bounds.maxX) {
-        //         bounds.maxX = wall.x;
-        //     }
-
-        //     if (wall.y < bounds.minY) {
-        //         bounds.minY = wall.y;
-        //     }
-        //     if (wall.y > bounds.maxY) {
-        //         bounds.maxY = wall.y;
-        //     }
-        // });
-
-        // this.runData.bounds = {
-        //     minX: bounds.minX - 1,
-        //     minY: bounds.minY - 1,
-        //     maxX: bounds.maxX + 1,
-        //     maxY: bounds.maxY + 1,
-        // }
 
         document.getElementById('run-btn').classList.add('hidden');
         document.getElementById('close-run-btn').classList.remove('hidden');
@@ -1240,9 +1134,7 @@ export default class Grid {
             }
             tb.classList.add('disabled');
         });
-
-        // this.BFS(this.components.start, this.components.end, this.components.walls, this.runData.bounds, this.checkComponents.bind(this));
-
+        
     }
 
     closeRun() {

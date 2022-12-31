@@ -1,6 +1,7 @@
-import Grid from './modules/Grid.js';
+import { Grid } from './modules/Grid.js';
 
 import { tickSvg, weightSvg, infoSvg, xSvg, smallXSvg, arrDown } from './assets/jsx.js';
+import { DropDown, Slider, Toggle, Picker } from './modules/SettingsComponents.js';
 
 
 
@@ -61,37 +62,274 @@ class Sandbox {
 
         ]
 
+        // this.settingsList = [
+        //     {
+        //         id: 0,
+        //         name: "Algorithm speed",
+        //         items: [
+        //             {
+        //                 id: 0,
+        //                 name: '',
+        //                 type: 'slider',
+        //                 function: 'temp'
+        //             }
+        //         ]
+        //     },
+        //     {
+        //         id: 1,
+        //         name: "Personalization",
+        //         items: [
+        //             {
+        //                 id: 0,
+        //                 name: 'Theme',
+        //                 type: 'dropdown',
+        //                 function: 'temp'
+        //             },
+        //             {
+        //                 id: 1,
+        //                 name: 'Palette',
+        //                 type: 'dropdown',
+        //                 function: 'temp'
+        //             }
+        //         ]
+        //     }
+        // ]
+
+        // this.settingsList = [
+        //     {
+        //         id: 0,
+        //         name: 'Algorithm',
+        //         items: [
+        //             {
+        //                 id: 0,
+        //                 name: 'Theme',
+        //                 setting: 'theme',
+        //                 type: 'dropdown',
+        //                 // options: ['Light', 'Dim', 'Dark']
+        //                 options: [
+        //                     {
+        //                         id: 0,
+        //                         name: 'Light',
+        //                     },
+        //                     {
+        //                         id: 1,
+        //                         name: 'Dim',
+        //                     },
+        //                     {
+        //                         id: 2,
+        //                         name: 'Dark',
+        //                     },
+        //                 ]
+        //             },
+        //             {
+        //                 id: 1,
+        //                 name: 'Speed',
+        //                 setting: 'speed',
+        //                 type: 'slider',
+        //                 start: 100,
+        //                 options: [
+        //                     {
+        //                         id: 0,
+        //                         name: 'Slow',
+        //                         value: 1,
+        //                     },
+        //                     {
+        //                         id: 1,
+        //                         name: 'Mid',
+        //                         value: 50,
+        //                     },
+        //                     {
+        //                         id: 2,
+        //                         name: 'Fast',
+        //                         value: 100,
+        //                     },
+        //                 ]
+        //             },
+        //             {
+        //                 id: 2,
+        //                 name: 'Stay inbounds',
+        //                 setting: 'stayInbounds',
+        //                 type: 'toggle',
+        //             },
+        //             {
+        //                 id: 3,
+        //                 name: 'UI color',
+        //                 setting: 'uiColor',
+        //                 type: 'picker',
+        //                 // options: ['Light', 'Dim', 'Dark']
+        //                 options: [
+        //                     {
+        //                         id: 0,
+        //                         name: 'Green',
+        //                         value: '#00FF00'
+        //                     },
+        //                     {
+        //                         id: 1,
+        //                         name: 'Blue',
+        //                         value: '#00D1FF'
+        //                     },
+        //                     {
+        //                         id: 2,
+        //                         name: 'Pink',
+        //                         value: '#FF00E5'
+        //                     },
+        //                     {
+        //                         id: 3,
+        //                         name: 'Yellow',
+        //                         value: '#FFFF00'
+        //                     },
+        //                     {
+        //                         id: 4,
+        //                         name: 'Red',
+        //                         value: '#FF0000'
+        //                     },
+        //                 ]
+        //             },
+
+        //         ]
+        //     },
+        // ]
+
+
         this.settingsList = [
             {
                 id: 0,
-                name: "Algorithm speed",
+                name: 'Algorithm',
                 items: [
                     {
                         id: 0,
-                        name: '',
+                        name: 'Stay inbounds',
+                        setting: 'stayInbounds',
+                        type: 'toggle',
+                        start: false
+                    },
+                    {
+                        id: 1,
+                        name: 'Run w / o possible path',
+                        setting: 'runNoPath',
+                        type: 'toggle',
+                        start: true
+                    },
+                    {
+                        id: 2,
+                        name: 'Speed',
+                        setting: 'speed',
                         type: 'slider',
-                        function: 'temp'
-                    }
+                        start: 100,
+                        range: [1, 100],
+                        options: [
+                            {
+                                id: 0,
+                                name: 'Slow',
+                                value: 1,
+                            },
+                            {
+                                id: 1,
+                                name: 'Mid',
+                                value: 50,
+                            },
+                            {
+                                id: 2,
+                                name: 'Fast',
+                                value: 100,
+                            },
+                        ]
+                    },
+
                 ]
             },
             {
                 id: 1,
-                name: "Personalization",
+                name: 'Personalization',
                 items: [
                     {
                         id: 0,
-                        name: 'Theme',
-                        type: 'dropdown',
-                        function: 'temp'
+                        name: 'UI color',
+                        setting: 'uiColor',
+                        type: 'picker',
+                        start: 0,
+                        options: [
+                            {
+                                id: 0,
+                                name: 'Green',
+                                value: '#00FF00'
+                            },
+                            {
+                                id: 1,
+                                name: 'Blue',
+                                value: '#00D1FF'
+                            },
+                            {
+                                id: 2,
+                                name: 'Pink',
+                                value: '#FF00E5'
+                            },
+                            {
+                                id: 3,
+                                name: 'Yellow',
+                                value: '#FFFF00'
+                            },
+                            {
+                                id: 4,
+                                name: 'Red',
+                                value: '#FF0000'
+                            },
+                        ]
                     },
                     {
                         id: 1,
-                        name: 'Palette',
+                        name: 'Theme',
+                        setting: 'theme',
                         type: 'dropdown',
-                        function: 'temp'
-                    }
+                        start: 2,
+                        // options: ['Light', 'Dim', 'Dark']
+                        options: [
+                            {
+                                id: 0,
+                                name: 'Light',
+                            },
+                            {
+                                id: 1,
+                                name: 'Dim',
+                            },
+                            {
+                                id: 2,
+                                name: 'Dark',
+                            },
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: 'Palette',
+                        setting: 'palette',
+                        type: 'dropdown',
+                        start: 0,
+                        identifiers: ['W', 'CH', 'CR', 'P'],
+                        // options: ['Light', 'Dim', 'Dark']
+                        options: [
+                            {
+                                id: 0,
+                                name: 'Default',
+                                extra: ['#FFFFFF', '#1400FF', '#00D1FF', '#FFFF00']
+                            },
+                            {
+                                id: 1,
+                                name: 'BG',
+                                extra: ['#FFFFFF', '#00FF00', '#FF0000', '#00D1FF']
+                            },
+                            {
+                                id: 2,
+                                name: 'Idk',
+                                extra: ['#FFFFFF', '#FF00D6', '#FF8A00', '#61FF00']
+                            },
+                        ]
+                    },
+
+
+
                 ]
-            }
+            },
+
         ]
 
 
@@ -146,6 +384,21 @@ class Sandbox {
         }
 
 
+        // this.settings = [
+        //     {
+        //         id: 0,
+        //         name: 'Algorithm',
+        //         items: [
+        //             {
+        //                 id: 0,
+        //                 type: 'dropdown',
+        //                 options: ['Light', 'Dim', 'Dark']
+        //             }
+        //         ]
+        //     }
+        // ]
+
+
         this.grid = new Grid(document.getElementById('grid-canvas'), this.returnInteraction.bind(this));
 
         this.init();
@@ -186,19 +439,18 @@ class Sandbox {
                         
             for (let i = 0; i < this.algList.length; i++) {
                 let alg = this.algList[i];
-                let el = `<div class="menu-item alg ${ alg.id == this.alg ? 'selected ' : ''} ">` +
-                            `<label for="" class="mi-main">${ alg.name }</label>` +
-                            '<div class="mi-icons pointers">' +
-                                `${ alg.closest ? tickSvg : '' }` +
-                                `${ alg.weight ? weightSvg : '' }` +
-                            '</div>' +
-                            '<div class="mi-icons info">' +
-                                `<div class="info-cont">${ infoSvg }</div>` +
-                                // `${ infoSvg }` +                                   
-                            '</div>' +
-                            `<p>${ alg.data }</p>`
-                        '</div>'
-                        // '<hr/>'
+                let el = `<div class="menu-item full alg ${ alg.id == this.alg ? 'selected ' : ''} ">
+                            <label for="" class="mi-main">${ alg.name }</label>
+                            <div class="mi-icons pointers">
+                                ${ alg.closest ? tickSvg : '' }
+                                ${ alg.weight ? weightSvg : '' }
+                            </div>
+                            <div class="mi-icons info">
+                                <div class="info-cont">${ infoSvg }</div>                                
+                            </div>
+                            <p>${ alg.data }</p>
+                        </div>`
+
 
                 menu.insertAdjacentHTML('beforeend', el);
                 menu.insertAdjacentHTML('beforeend', '<hr/>');
@@ -241,7 +493,6 @@ class Sandbox {
                         document.querySelectorAll('.menu-item')[i].classList.add('selected');
 
                     }
-                    // console.log(e.target.classList.contains('info-cont'));
 
                 }, i);
             }
@@ -262,16 +513,17 @@ class Sandbox {
 
             for (let i = 0; i < this.settingsList.length; i++) {
                 let setting = this.settingsList[i];
-                let el = `<div class="menu-item setting open ">` +
-                            `<label class="mi-main">${ setting.name }</label>` +
-                            '<div class="mi-icons arrow">' +
-                                `${ arrDown }` +
-                            '</div>' +
-                            '<div class="mi-item-cont">' +
-                                
-                            '</div>'
-                        '</div>'
-                        // '<hr/>'
+                let el = `<div class="menu-item setting ">
+                            <div class="mi-main-cont">
+                                <label class="mi-main">${ setting.name }</label>
+                                <div class="mi-icons arrow">
+                                    ${ arrDown }
+                                </div>
+                            </div>
+                            <div class="mi-item-cont">
+                            </div>
+                        </div>`
+
 
                 menu.insertAdjacentHTML('beforeend', el);
                 menu.insertAdjacentHTML('beforeend', '<hr/>');
@@ -280,17 +532,58 @@ class Sandbox {
 
                 for (let j = 0; j < setting.items.length; j++) {
                     let item = setting.items[j];
+                    
+                    menuItem[i].getElementsByClassName('mi-item-cont')[0].insertAdjacentHTML('beforeend', `<div class="mi-item ${ item.type == 'toggle' ? 'line ': ''}"></div>`);
+                    let itemCont = menuItem[i].getElementsByClassName('mi-item-cont')[0].getElementsByClassName('mi-item')[j];
+                    itemCont.insertAdjacentHTML('beforeend', `<label class="mi-item-label">${ item.name }</label>`);
 
-                    let itemCont = '<div class="mi-item">' +
-                        `<label>${ item.name }</label>` +
-                    '</div>'
-
-
-                    menuItem[i].getElementsByClassName('mi-item-cont')[0].insertAdjacentHTML('beforeend', itemCont);
-
-
+                    if (item.type == 'dropdown') {
+                        new DropDown(item.options, itemCont, item.setting, item.start, item.identifiers ? item.identifiers : undefined, this.updateSettings.bind(this)).createElement();
+                    }
+                    else if (item.type == 'slider') {
+                        new Slider(item.options, itemCont, item.setting, item.start, item.range, this.updateSettings.bind(this)).createElement();
+                    }
+                    else if (item.type == 'toggle') {
+                        new Toggle(item.start, itemCont, item.setting, this.updateSettings.bind(this)).createElement();
+                    }
+                    else if (item.type == 'picker') {
+                        new Picker(item.options, itemCont, item.setting, item.start, this.updateSettings.bind(this)).createElement();
+                    }
 
                 }
+
+                menuItem[i].addEventListener('click', (e) => {
+                    
+                    if (e.target.classList.contains('mi-main-cont') && menuItem[i].classList.contains('open')) {
+                        menuItem[i].classList.remove('open');
+                        menuItem[i].style.height = '90px';
+                        return;
+                    }
+
+
+                    // document.querySelectorAll('.menu-item').forEach(item => {
+                    //     item.classList.remove('open');
+                    //     item.style.height = '90px';
+                    // });
+                    menuItem[i].classList.add('open');
+                    menuItem[i].style.height = menuItem[i].scrollHeight + 'px';
+
+                }, i);
+
+                menuItem[i].addEventListener('mouseover', (e) => {
+                    if (e.target.classList.contains('mi-main-cont')) {
+                        menuItem[i].classList.add('hovered');
+                    }
+                    else {
+                        menuItem[i].classList.remove('hovered');
+                    }
+                }, i);
+
+                menuItem[i].addEventListener('mouseout', (e) => {
+                    menuItem[i].classList.remove('hovered');
+                }, i);
+
+
             }
         }
         else if (type == 'upload') {
@@ -300,6 +593,11 @@ class Sandbox {
 
         }
     }
+
+    updateSettings(setting, value) {
+        this.grid.updateSettings(setting, value);
+    }
+
 
     interactionBtnClick(btn) {
 
