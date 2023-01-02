@@ -1,10 +1,15 @@
 export default class Algs {
-    constructor(alg, start, end, walls, bounds, checkComponents) {
+    constructor(alg, start, end, walls, bounds, settings, checkComponents) {
         this.alg = alg;
         this.start = start;
         this.end = end;
         this.walls = walls;
-        this.bounds = bounds
+        this.bounds = bounds;
+
+        this.speed = settings.speed;
+        this.stayInbounds = settings.stayInbounds,
+        this.runNoPath = settings.runNoPath,
+
 
         this.checkComponents = checkComponents;
 
@@ -36,9 +41,38 @@ export default class Algs {
             path: []
         });
 
-        // console.log(this.queue)
 
-        // this.BFS();
+        // let bounds = {
+        //     minX: Math.min(this.start.x, this.end.x),
+        //     minY: Math.min(this.start.y, this.end.y),
+        //     maxX: Math.max(this.start.x, this.end.x),
+        //     maxY: Math.max(this.start.y, this.end.y)
+        // }
+
+        // this.walls.forEach((wall) => {
+        //     if (wall.x < bounds.minX) {
+        //         bounds.minX = wall.x;
+        //     }
+        //     if (wall.x > bounds.maxX) {
+        //         bounds.maxX = wall.x;
+        //     }
+
+        //     if (wall.y < bounds.minY) {
+        //         bounds.minY = wall.y;
+        //     }
+        //     if (wall.y > bounds.maxY) {
+        //         bounds.maxY = wall.y;
+        //     }
+        // });
+
+        // this.bounds = {
+        //     minX: bounds.minX - 1,
+        //     minY: bounds.minY - 1,
+        //     maxX: bounds.maxX + 1,
+        //     maxY: bounds.maxY + 1,
+        // }
+
+
         this[this.algList[this.alg]]();
     }
 
@@ -102,6 +136,11 @@ export default class Algs {
                     exitFound = true;
                     continue;
                 }
+
+                if (this.stayInbounds && (x < this.bounds.minX || y < this.bounds.minY || x > this.bounds.maxX || y > this.bounds.maxY)) {
+                    // boundCross++;
+                    continue;
+                }
                 
                 let newPath = neighbors[i].path.slice();
 
@@ -130,7 +169,7 @@ export default class Algs {
                     continue;
                 }
 
-                await this.waitForSecs(1);
+                await this.waitForSecs(this.speed);
                 
             }
                         
@@ -214,5 +253,13 @@ export default class Algs {
         this[this.algList[this.alg]]();
     }
 
+
+    updateSettings(value) {
+        this.speed = value['speed'];
+        this.stayInbounds = value['stayInbounds'];
+        this.runNoPath = value['runNoPath'];
+
+        console.log(value)
+    }
 
 }

@@ -1,3 +1,6 @@
+@import './vars';
+
+
 .sc-dropdown, .sc-item {
     position: relative;
 
@@ -82,7 +85,6 @@
     overflow: hidden;
 
     transition: width .2s;
-    // background-color: #00c200;
 }
 .sc-dropdown .sc-dropdown-item-extra div {
     width: 100%;
@@ -134,12 +136,11 @@
 .sc-slider input {
 
     appearance: none;
-    // accent-color: #00FF00;
 
     width: 100%;
     height: 3px;
 
-    background-color: #202020;
+    background-color: var(--color2);
     border-radius: 1000px;
 
     border: none;
@@ -154,7 +155,7 @@
     cursor: ew-resize;
 
     // background-color: #00FF00;
-    background-color: #00FF00;
+    background-color: var(--ui-color);
 
     width: 14px;
     height: 14px;
@@ -162,10 +163,10 @@
     border: none;
     border-radius: 50%;
 
-    transition: background-color .1s;
+    transition: background-color .1s, filter .1s;
 }
 .sc-slider input:hover::-webkit-slider-thumb {
-    background-color: #00c200;
+    filter: brightness(.8);
 }
 
 .sc-slider input::-webkit-slider-runnable-track {
@@ -177,9 +178,9 @@
     box-shadow: none;
 }
 
-.sc-slider input::-ms-fill-lower {
-    background-color: #00FF00;
-}
+// .sc-slider input::-ms-fill-lower {
+//     background-color: var(--ui-color);
+// }
 
 .sc-slider div {
     display: grid;
@@ -207,7 +208,7 @@
 }
 
 .sc-slider div label.active {
-    color: #00FF00;
+    color: var(--ui-color);
 }
 
 
@@ -269,22 +270,23 @@
 }
 
 .sc-toggle .toggle.active input {
-    background-color: #00FF0080;
+    // background-color: RGBA(var(--ui-color), 0.8);
 }
 .sc-toggle .toggle.active div {
     // background-color: white;
-    background-color: #00FF00;
+    background-color: var(--ui-color);
     left: 100%;
     transform: translateX(-100%);
     // right: 0px;
 }
 
 .sc-toggle .toggle:hover {
-    filter: brightness(1.2);
+    filter: brightness(var(--filter));
 }
-.sc-toggle .toggle.active:hover {
-    filter: brightness(.8);
-}
+
+// .sc-toggle .toggle.active:hover {
+//     filter: brightness(.8);
+// }
 
 .sc-picker {
     overflow: visible;

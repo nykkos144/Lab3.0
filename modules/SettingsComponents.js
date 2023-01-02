@@ -1,24 +1,31 @@
 import { arrDown, tickSvg_black } from "../assets/jsx.js";
 
+
 export class DropDown {
-    constructor(options, DOMParent, setting, start, identifiers, updateSettings) {
+    constructor(item, DOMParent, ind, ind2, updateSettings) {
         // this.id = id;
-        this.options = options;
+        this.options = item.options;
+        this.setting = item.setting;
+        this.start = item.start;
+        this.identifiers = item.identifiers;
+ 
+        this.ind = ind;
+        this.ind2 = ind2;
+
         this.DOMParent = DOMParent;
-        this.setting = setting;
-        this.start = start;
-        this.identifiers = identifiers;
         this.updateSettings = updateSettings;
 
         this.element = document.createElement('div');
+
     }
 
 
     createElement() {
 
         if (this.start > 0) {
-            let tempOption = this.options[this.start];
-            this.options.splice(this.start, 1);
+            let tempInd = this.options.findIndex(x => x.id == this.start);
+            let tempOption = this.options[tempInd];
+            this.options.splice(tempInd, 1);
             this.options.sort((a, b) => a.id - b.id);
             this.options.unshift(tempOption);
         }
@@ -85,7 +92,6 @@ export class DropDown {
             for(let i = 0; i < this.element.getElementsByClassName('sc-dropdown-item-cont')[0].getElementsByClassName('sc-dropdown-item').length; i++) {
                 this.element.getElementsByClassName('sc-dropdown-item-cont')[0].getElementsByClassName('sc-dropdown-item')[i].getElementsByClassName('sc-dropdown-item-extra')[0].classList.remove('full');
             }
-
         }
         
         let tempOption = this.options[index];
@@ -98,7 +104,7 @@ export class DropDown {
             this.update();
         }, 200)
 
-        this.updateSettings(this.setting, value);
+        this.updateSettings(this.setting, value, this.ind, this.ind2);
 
     }
 
@@ -137,13 +143,17 @@ export class DropDown {
 
 
 export class Slider {
-    constructor(options, DOMParent, setting, start, range, updateSettings) {
+    constructor(item, DOMParent, ind, ind2, updateSettings) {
         // this.id = id;
-        this.options = options;
+        this.options = item.options;
+        this.setting = item.setting;
+        this.start = item.start;
+        this.range = item.range;
+ 
+        this.ind = ind;
+        this.ind2 = ind2;
+
         this.DOMParent = DOMParent;
-        this.setting = setting;
-        this.start = start;
-        this.range = range;
         this.updateSettings = updateSettings;
 
         this.element = document.createElement('div');
@@ -152,9 +162,11 @@ export class Slider {
 
     createElement() {
 
+        let uiColor = getComputedStyle(document.documentElement).getPropertyValue('--ui-color');
+
         this.element.classList.add('sc-slider', 'sc-item');
 
-        this.element.innerHTML = `<input type="range" id="weight" min="${ this.range[0] }" value="${ this.start }" max="${ this.range[1] }" step="1" list="speedsettings" style="background: linear-gradient(90deg, #00FF00 ${ this.start }%, #202020 ${ this.start }%)" />
+        this.element.innerHTML = `<input type="range" class="slider-element" min="${ this.range[0] }" value="${ this.start }" max="${ this.range[1] }" step="1" list="speedsettings" style="background: linear-gradient(90deg, ${ uiColor } ${ this.start }%, #202020 ${ this.start }%)" />
                                     <div>
                                         ${ this.options.map((option, ind) => {
                                             return `<label>${ option.name }</label>`
@@ -172,9 +184,11 @@ export class Slider {
 
     onChange(e) {
 
-        this.element.style.background = `linear-gradient(90deg, #00FF00 ${ this.element.value }%, #202020 ${ this.element.value }%)`;
+        let uiColor = getComputedStyle(document.documentElement).getPropertyValue('--ui-color');
 
-        this.updateSettings(this.setting, this.element.value);
+        this.element.style.background = `linear-gradient(90deg, ${ uiColor } ${ this.element.value }%, #202020 ${ this.element.value }%)`;
+
+        this.updateSettings(this.setting, this.element.value, this.ind, this.ind2);
 
         this.update();
     }
@@ -201,11 +215,14 @@ export class Slider {
 
 
 export class Toggle {
-    constructor(checked, DOMParent, setting, updateSettings) {
-        this.checked = checked;
+    constructor(item, DOMParent, ind, ind2, updateSettings) {
+        this.checked = item.start;
+        this.setting = item.setting;
         this.DOMParent = DOMParent;
-        this.setting = setting;
         this.updateSettings = updateSettings;
+
+        this.ind = ind;
+        this.ind2 = ind2;
 
         this.element = document.createElement('div');
     }
@@ -238,7 +255,7 @@ export class Toggle {
             this.checked = true;
         }
 
-        this.updateSettings(this.setting, this.checked);
+        this.updateSettings(this.setting, this.checked, this.ind, this.ind2);
     }
 
     update() {
@@ -254,13 +271,16 @@ export class Toggle {
 
 
 export class Picker {
-    constructor(options, DOMParent, setting, start, updateSettings) {
-        this.options = options;
+    constructor(item, DOMParent, ind, ind2, updateSettings) {
+        this.options = item.options;
+        this.setting = item.setting;
+        this.selected = item.start;
+
         this.DOMParent = DOMParent;
-        this.setting = setting;
         this.updateSettings = updateSettings;
 
-        this.selected = start;
+        this.ind = ind;
+        this.ind2 = ind2;
 
         this.element = document.createElement('div');
     }
@@ -294,7 +314,7 @@ export class Picker {
 
         this.element.getElementsByClassName('sc-picker-item')[this.selected].classList.add('active');
 
-        this.updateSettings(this.setting, this.selected);
+        this.updateSettings(this.setting, this.selected, this.ind, this.ind2);
 
         // this.update();
     }

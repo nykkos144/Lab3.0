@@ -366,6 +366,25 @@ export class Grid {
             theme: 2,
             palette: 0,
         }
+        this.settingsHelper = {
+            uiColor: {
+                0: '#00FF00',
+                1: '#00D1FF',
+                2: '#FFC0CB',
+                3: '#FFFF00',
+                4: '#FD7F20'
+            },
+            theme: {
+
+            },
+            palette: {
+                0: ['#FFFFFF', '#1400FF', '#00D1FF', '#FFFF00'],
+                1: ['#FFFFFF', '#00FF00', '#FF0000', '#00D1FF'],
+                2: ['#FFFFFF', '#FF00D6', '#FF8A00', '#61FF00'],
+            }
+        }
+
+
 
         this.colors = {
             stroke: '#252525',
@@ -382,23 +401,12 @@ export class Grid {
             path: '#FFFF00' 
         }
 
-        // this.running = false;
         this.alg = 0;
         
         this.returnInteractionCallback = returnInteraction;
 
-        this.runData = {
-            running: false,
-            skip: false,
-            skipPath: false,
-            finished: false,
-            paused: false,
-            pathInd: -1,
-            queue: [],
-            // current: {},
-            checked: [],
-            bounds: []
-        }
+        this.running = false;
+        this.bounds = [];
 
     }
 
@@ -418,10 +426,10 @@ export class Grid {
             selectedBool: this.selected.length > 0 ? true : false,
         });
 
-        // this.algs = new Algs();
-
         this.canvas.width = this.width;
         this.canvas.height = this.height;
+
+        window.addEventListener('resize', this.onResize.bind(this));
 
 
         this.drawGrid();
@@ -430,6 +438,11 @@ export class Grid {
     onResize() {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
+
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+
+        this.drawGrid();
     }
 
 
@@ -457,9 +470,35 @@ export class Grid {
     changeAlg(alg) {
         this.alg = alg;
     }
+
     updateSettings(setting, value) {
         this.settings[setting] = value;
-        console.log(this.settings)
+        // console.log(this.settings)
+    
+        if (setting == 'uiColor') {
+            document.documentElement.style.setProperty('--ui-color', this.settingsHelper['uiColor'][value]);
+            
+            let tempEl = document.getElementsByClassName('slider-element');
+            // console.log(tempEl)
+
+            for (let i = 0; i < tempEl.length; i++) {
+                let uiColor = getComputedStyle(document.documentElement).getPropertyValue('--ui-color');
+                tempEl[i].style.background = `linear-gradient(90deg, ${ uiColor } ${ tempEl[i].value }%, #202020 ${ tempEl[i].value }%)`;
+            }
+        }
+        else if (setting == 'palette') {
+            this.colors['wall'] = this.settingsHelper['palette'][value][0];
+            this.colors['current'] = this.settingsHelper['palette'][value][1];
+            this.colors['checked'] = this.settingsHelper['palette'][value][2];
+            this.colors['path'] = this.settingsHelper['palette'][value][3];
+        }
+        else if (setting == 'speed') {
+            this.settings['speed'] = 101 - value;
+        }
+
+        if (this.algs) {
+            this.algs.updateSettings(this.settings);
+        }
     }
 
 
@@ -833,6 +872,19 @@ export class Grid {
             this.ctx.fillRect(cordsX + 1, cordsY + 1, this.nodeSize - 1, this.nodeSize - 1);
         }
 
+
+        if (this.running && this.settings.stayInbounds) {
+
+            let sX, sY, eX, eY;
+            [sX, sY] = this.calcCords(this.bounds.minX, this.bounds.minY);
+            [eX, eY] = this.calcCords(this.bounds.maxX, this.bounds.maxY);
+            
+            this.ctx.strokeStyle = '#fff';
+            this.ctx.strokeRect(sX - 2, sY - 2, (this.bounds.maxX - this.bounds.minX + 1) * this.nodeSize + 5, (this.bounds.maxY - this.bounds.minY + 1) * this.nodeSize + 5);
+        }
+
+
+
     }
     scalePreserveAspectRatio(imgW, imgH, maxW, maxH){
         return(Math.min((maxW / imgW), (maxH / imgH)));
@@ -1119,8 +1171,41 @@ export class Grid {
     
 
     run() {
+        this.running = true;
 
-        this.algs = new Algs(this.alg, this.components.start, this.components.end, this.components.walls, [], this.checkComponents.bind(this));
+        let bounds = {
+            minX: Math.min(this.components.start.x, this.components.end.x),
+            minY: Math.min(this.components.start.y, this.components.end.y),
+            maxX: Math.max(this.components.start.x, this.components.end.x),
+            maxY: Math.max(this.components.start.y, this.components.end.y)
+        }
+
+        this.components.walls.forEach((wall) => {
+            if (wall.x < bounds.minX) {
+                bounds.minX = wall.x;
+            }
+            if (wall.x > bounds.maxX) {
+                bounds.maxX = wall.x;
+            }
+
+            if (wall.y < bounds.minY) {
+                bounds.minY = wall.y;
+            }
+            if (wall.y > bounds.maxY) {
+                bounds.maxY = wall.y;
+            }
+        });
+
+        bounds = {
+            minX: bounds.minX - 1,
+            minY: bounds.minY - 1,
+            maxX: bounds.maxX + 1,
+            maxY: bounds.maxY + 1,
+        }
+
+        this.bounds = bounds;
+
+        this.algs = new Algs(this.alg, this.components.start, this.components.end, this.components.walls, bounds, this.settings, this.checkComponents.bind(this));
 
         this.changeInteraction('hand');
 
@@ -1134,10 +1219,14 @@ export class Grid {
             }
             tb.classList.add('disabled');
         });
+
+        this.drawGrid();
         
     }
 
     closeRun() {
+        this.running = false;
+
         this.algs.closeRun();
 
         this.pathviz = {
@@ -1205,7 +1294,7 @@ export class Grid {
 }
 
 
-
+// window.addEventListener('resize', onResize())
 
 
 

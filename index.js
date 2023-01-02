@@ -62,135 +62,6 @@ class Sandbox {
 
         ]
 
-        // this.settingsList = [
-        //     {
-        //         id: 0,
-        //         name: "Algorithm speed",
-        //         items: [
-        //             {
-        //                 id: 0,
-        //                 name: '',
-        //                 type: 'slider',
-        //                 function: 'temp'
-        //             }
-        //         ]
-        //     },
-        //     {
-        //         id: 1,
-        //         name: "Personalization",
-        //         items: [
-        //             {
-        //                 id: 0,
-        //                 name: 'Theme',
-        //                 type: 'dropdown',
-        //                 function: 'temp'
-        //             },
-        //             {
-        //                 id: 1,
-        //                 name: 'Palette',
-        //                 type: 'dropdown',
-        //                 function: 'temp'
-        //             }
-        //         ]
-        //     }
-        // ]
-
-        // this.settingsList = [
-        //     {
-        //         id: 0,
-        //         name: 'Algorithm',
-        //         items: [
-        //             {
-        //                 id: 0,
-        //                 name: 'Theme',
-        //                 setting: 'theme',
-        //                 type: 'dropdown',
-        //                 // options: ['Light', 'Dim', 'Dark']
-        //                 options: [
-        //                     {
-        //                         id: 0,
-        //                         name: 'Light',
-        //                     },
-        //                     {
-        //                         id: 1,
-        //                         name: 'Dim',
-        //                     },
-        //                     {
-        //                         id: 2,
-        //                         name: 'Dark',
-        //                     },
-        //                 ]
-        //             },
-        //             {
-        //                 id: 1,
-        //                 name: 'Speed',
-        //                 setting: 'speed',
-        //                 type: 'slider',
-        //                 start: 100,
-        //                 options: [
-        //                     {
-        //                         id: 0,
-        //                         name: 'Slow',
-        //                         value: 1,
-        //                     },
-        //                     {
-        //                         id: 1,
-        //                         name: 'Mid',
-        //                         value: 50,
-        //                     },
-        //                     {
-        //                         id: 2,
-        //                         name: 'Fast',
-        //                         value: 100,
-        //                     },
-        //                 ]
-        //             },
-        //             {
-        //                 id: 2,
-        //                 name: 'Stay inbounds',
-        //                 setting: 'stayInbounds',
-        //                 type: 'toggle',
-        //             },
-        //             {
-        //                 id: 3,
-        //                 name: 'UI color',
-        //                 setting: 'uiColor',
-        //                 type: 'picker',
-        //                 // options: ['Light', 'Dim', 'Dark']
-        //                 options: [
-        //                     {
-        //                         id: 0,
-        //                         name: 'Green',
-        //                         value: '#00FF00'
-        //                     },
-        //                     {
-        //                         id: 1,
-        //                         name: 'Blue',
-        //                         value: '#00D1FF'
-        //                     },
-        //                     {
-        //                         id: 2,
-        //                         name: 'Pink',
-        //                         value: '#FF00E5'
-        //                     },
-        //                     {
-        //                         id: 3,
-        //                         name: 'Yellow',
-        //                         value: '#FFFF00'
-        //                     },
-        //                     {
-        //                         id: 4,
-        //                         name: 'Red',
-        //                         value: '#FF0000'
-        //                     },
-        //                 ]
-        //             },
-
-        //         ]
-        //     },
-        // ]
-
-
         this.settingsList = [
             {
                 id: 0,
@@ -262,7 +133,7 @@ class Sandbox {
                             {
                                 id: 2,
                                 name: 'Pink',
-                                value: '#FF00E5'
+                                value: '#FFC0CB'
                             },
                             {
                                 id: 3,
@@ -271,8 +142,8 @@ class Sandbox {
                             },
                             {
                                 id: 4,
-                                name: 'Red',
-                                value: '#FF0000'
+                                name: 'Orange',
+                                value: '#FD7F20'
                             },
                         ]
                     },
@@ -304,8 +175,7 @@ class Sandbox {
                         setting: 'palette',
                         type: 'dropdown',
                         start: 0,
-                        identifiers: ['W', 'CH', 'CR', 'P'],
-                        // options: ['Light', 'Dim', 'Dark']
+                        identifiers: ['W', 'CR', 'CH', 'P'],
                         options: [
                             {
                                 id: 0,
@@ -332,27 +202,7 @@ class Sandbox {
 
         ]
 
-
         this.alg = 0;
-        
-
-        // this.btns = {
-        //     add: document.getElementById('add-btn'),
-        //     remove: document.getElementById('remove-btn'),
-        //     start: document.getElementById('start-btn'),
-        //     end: document.getElementById('end-btn'),
-        //     delete: document.getElementById('delete-btn'),
-        //     refresh: document.getElementById('refresh-btn'),
-        //     run: document.getElementById('run-btn'),
-        //     alg: document.getElementById('alg-btn'),
-        //     gen: document.getElementById('gen-btn'),
-        //     settings: document.getElementById('settings-btn'),
-        //     upload: document.getElementById('upload-btn'),
-        //     download: document.getElementById('download-btn'),
-        //     hand: document.getElementById('hand-btn'),
-        //     pointer: document.getElementById('pointer-btn')
-        // }
-
 
         this.btns = {
             interactions: {
@@ -383,26 +233,9 @@ class Sandbox {
 
         }
 
-
-        // this.settings = [
-        //     {
-        //         id: 0,
-        //         name: 'Algorithm',
-        //         items: [
-        //             {
-        //                 id: 0,
-        //                 type: 'dropdown',
-        //                 options: ['Light', 'Dim', 'Dark']
-        //             }
-        //         ]
-        //     }
-        // ]
-
-
         this.grid = new Grid(document.getElementById('grid-canvas'), this.returnInteraction.bind(this));
 
         this.init();
-        // this.grid.init();
     }
 
     init() {
@@ -532,22 +365,23 @@ class Sandbox {
 
                 for (let j = 0; j < setting.items.length; j++) {
                     let item = setting.items[j];
-                    
+                
+
                     menuItem[i].getElementsByClassName('mi-item-cont')[0].insertAdjacentHTML('beforeend', `<div class="mi-item ${ item.type == 'toggle' ? 'line ': ''}"></div>`);
                     let itemCont = menuItem[i].getElementsByClassName('mi-item-cont')[0].getElementsByClassName('mi-item')[j];
                     itemCont.insertAdjacentHTML('beforeend', `<label class="mi-item-label">${ item.name }</label>`);
 
                     if (item.type == 'dropdown') {
-                        new DropDown(item.options, itemCont, item.setting, item.start, item.identifiers ? item.identifiers : undefined, this.updateSettings.bind(this)).createElement();
+                        new DropDown(item, itemCont, i, j, this.updateSettings.bind(this)).createElement();
                     }
                     else if (item.type == 'slider') {
-                        new Slider(item.options, itemCont, item.setting, item.start, item.range, this.updateSettings.bind(this)).createElement();
+                        new Slider(item, itemCont, i, j, this.updateSettings.bind(this)).createElement();
                     }
                     else if (item.type == 'toggle') {
-                        new Toggle(item.start, itemCont, item.setting, this.updateSettings.bind(this)).createElement();
+                        new Toggle(item, itemCont, i, j, this.updateSettings.bind(this)).createElement();
                     }
                     else if (item.type == 'picker') {
-                        new Picker(item.options, itemCont, item.setting, item.start, this.updateSettings.bind(this)).createElement();
+                        new Picker(item, itemCont, i, j, this.updateSettings.bind(this)).createElement();
                     }
 
                 }
@@ -594,8 +428,10 @@ class Sandbox {
         }
     }
 
-    updateSettings(setting, value) {
+    updateSettings(setting, value, ind, ind2) {
         this.grid.updateSettings(setting, value);
+
+        this.settingsList[ind].items[ind2].start = value;
     }
 
 
@@ -620,11 +456,6 @@ class Sandbox {
     }
     gridControlBtnClick(btn) {
 
-        // if (btn == 'run') {
-        //     this.run();
-        //     return;
-        // }
-        // this.interaction = btn;
         this.grid.gridControl(btn);
 
         console.log('gridControl -> ', btn);
@@ -647,12 +478,7 @@ document.getElementById('menu-container').addEventListener('click', (e) => {
     }
 });
 
-// document.getElementById('run-btn').addEventListener('click', (e) => {
-//     sandbox.run();
-// });
-
-// let grid = new Grid(document.getElementById('grid-canvas'));
-// grid.init();
+// window.addEventListener('resize', sandbox.grid.onResize);
 
 
 
